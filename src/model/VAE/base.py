@@ -1,6 +1,6 @@
 from torch		import nn
 from abc		import abstractmethod
-from ...types	import *
+from ...types_	import *
 
 class Base(nn.Module):
 	def __init__(self):

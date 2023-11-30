@@ -4,7 +4,7 @@ from .dataset import CustomDataset
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
-def train(train_loader, learning_rate=0.01, epochs=10):
+def train(train_loader, learning_rate=0.005, epochs=10):
 	device = 0
 	model = VAE().to(device)
 	optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -15,13 +15,13 @@ def train(train_loader, learning_rate=0.01, epochs=10):
 			data = data.to(device)
 			optimizer.zero_grad()
 			outputs = model(data)
-			result = criterion(*outputs, M_N=0.005)
+			result = criterion(*outputs, M_N=0.00025)
 			loss = result['loss']
 			recon_loss = result['Reconstruction_Loss']
 			kl_loss = result['KLD']
 			loss.backward()
 			optimizer.step()
-			if i % 100 == 0:
+			if (i + 1) % 100 == 0:
 				print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Recon Loss: {:.4f}, KL Div: {:.4f}'.format(
 					epoch + 1, epochs, i + 1, len(train_loader), loss.item(), recon_loss.item(), kl_loss.item()
 				))
