@@ -1,6 +1,6 @@
 import torch
-from model import VAE
-from dataset import CustomDataset
+from .model import VAE
+from .dataset import CustomDataset
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
