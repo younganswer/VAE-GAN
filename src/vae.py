@@ -42,12 +42,12 @@ def main():
 	])
 
 	train_data = CustomDataset(
-		root='../data/CelebA/',
+		root='./data/CelebA/',
 		split='train',
 		transform=train_transform
 	)
 	test_data = CustomDataset(
-		root='../data/CelebA/',
+		root='./data/CelebA/',
 		split='test',
 		transform=test_transform
 	)
