@@ -4,7 +4,7 @@ import random
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from PIL import Image
-from ..types import *
+from ..types_ import *
 
 class CustomDataset(Dataset):
 	__dataset: Dict = {}

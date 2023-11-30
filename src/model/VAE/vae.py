@@ -2,7 +2,7 @@ import torch
 from torch		import nn
 from torch.nn	import functional as F
 from .base 		import *
-from ...types	import *
+from ...types_	import *
 
 class VAE(Base):
 	def	__init__(
