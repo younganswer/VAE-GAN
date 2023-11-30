@@ -4,7 +4,7 @@ from .dataset import CustomDataset
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
-def train(train_loader, learning_rate=0.0001, epochs=10):
+def train(train_loader, learning_rate=0.01, epochs=10):
 	device = 0
 	model = VAE().to(device)
 	optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
