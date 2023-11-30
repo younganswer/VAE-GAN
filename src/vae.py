@@ -5,10 +5,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 
 def train(train_loader, learning_rate=0.0001, epochs=10):
-	device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
-	device = "cpu"
-	print("Using {} device".format(device))
-
+	device = 0
 	model = VAE().to(device)
 	optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 	criterion = model.loss_function
