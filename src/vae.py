@@ -6,6 +6,7 @@ from torchvision import transforms
 
 def train(train_loader, learning_rate=0.005, epochs=10):
 	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+	print("Using {} device".format(device))
 	model = VAE().to(device)
 	optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 	criterion = model.loss_function
