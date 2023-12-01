@@ -68,7 +68,7 @@ def main():
 	model = train(train_loader)
 
 	# Save model
-	torch.save(model.state_dict(), './model/VAE/vae.pth')
+	torch.save(model.state_dict(), './src/model/VAE/vae.pth')
 
 	return 0
 
