@@ -90,7 +90,8 @@ class VAE(Base):
 		return [mu, log_var]
 
 	def	decode(self, z: Tensor) -> Tensor:
-		result = nn.Linear(self.latent_dim, self.hidden_dims[-1] * 7 * 7)(z)
+		fc_to_conv = nn.Linear(self.latent_dim, self.hidden_dims[-1] * 7 * 7)
+		result = fc_to_conv(z)
 		result = result.view(-1, self.hidden_dims[-1], 7, 7)
 		result = self.decoder(result)
 		result = self.output(result)
