@@ -16,13 +16,16 @@ class VAE(Base):
 		if hidden_dims is None:
 			hidden_dims = [32, 64, 128, 256, 512]
 
-		self.__init_encoder(latent_dim, hidden_dims)
-		self.__init_decoder(latent_dim, hidden_dims)
+		self.latent_dim = latent_dim
+		self.hidden_dims = hidden_dims
+
+		self.__init_encoder()
+		self.__init_decoder()
 		
-	def	__init_encoder(self, latent_dim: int, hidden_dims: List = None) -> None:
+	def	__init_encoder(self) -> None:
 		modules = []
 		in_channels = 3
-		for hidden_dim in hidden_dims:
+		for hidden_dim in self.hidden_dims:
 			modules.append(
 				nn.Sequential(
 					nn.Conv2d(
@@ -39,25 +42,24 @@ class VAE(Base):
 			in_channels = hidden_dim
 
 		self.encoder = nn.Sequential(*modules)
-		self.fc_mu = nn.Linear(hidden_dims[-1] * 7 * 7, latent_dim)
-		self.fc_var = nn.Linear(hidden_dims[-1] * 7 * 7, latent_dim)
+		self.fc_mu = nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim)
+		self.fc_var = nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim)
 
-	def	__init_decoder(self, latent_dim: int, hidden_dims: List = None) -> None:
+	def	__init_decoder(self) -> None:
 		modules = []
-		hidden_dims.reverse()
 
-		for i in range(len(hidden_dims) - 1):
+		for i in range(len(self.hidden_dims) - 1, 0, -1):
 			modules.append(
 				nn.Sequential(
 					nn.ConvTranspose2d(
-						hidden_dims[i],
-						hidden_dims[i+1],
+						self.hidden_dims[i],
+						self.hidden_dims[i-1],
 						kernel_size=3,
 						stride=2,
 						padding=1,
 						output_padding=1
 					),
-					nn.BatchNorm2d(hidden_dims[i+1]),
+					nn.BatchNorm2d(self.hidden_dims[i-1]),
 					nn.LeakyReLU()
 				)
 			)
@@ -66,16 +68,16 @@ class VAE(Base):
 
 		self.output = nn.Sequential(
 			nn.ConvTranspose2d(
-				hidden_dims[-1],
-				hidden_dims[-1],
+				self.hidden_dims[0],
+				self.hidden_dims[0],
 				kernel_size=3,
 				stride=2,
 				padding=1,
 				output_padding=1
 			),
-			nn.BatchNorm2d(hidden_dims[-1]),
+			nn.BatchNorm2d(self.hidden_dims[0]),
 			nn.LeakyReLU(),
-			nn.Conv2d(hidden_dims[-1], out_channels=3, kernel_size=3, padding=1),
+			nn.Conv2d(self.hidden_dims[0], out_channels=3, kernel_size=3, padding=1),
 			nn.Tanh()
 		)
 
@@ -88,8 +90,8 @@ class VAE(Base):
 		return [mu, log_var]
 
 	def	decode(self, z: Tensor) -> Tensor:
-		result = nn.Linear(z.shape[1], z.shape[0])(z)
-		result = result.view(-1, 512, 7, 7)
+		result = nn.Linear(z.shape[1], self.hidden_dims[-1] * 7 * 7)(z)
+		result = result.view(-1, self.hidden_dims[-1], 7, 7)
 		result = self.decoder(result)
 		result = self.output(result)
 
