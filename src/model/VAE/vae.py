@@ -121,17 +121,22 @@ class VAE(Base):
 		mu = args[2]
 		log_var = args[3]
 
+		# Reconstruction loss with mean square error
 		recons_loss = F.mse_loss(recons, input)
 
+		# Hyperparameter for KLD loss
 		kld_weight = kwargs['M_N']
-		kld_loss = torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim = 1), dim = 0)
 
+		# kld loss = var + mu^2 - 1 - log(var)
+		kld_loss = torch.mean(-0.5 * torch.sum(log_var.exp() + mu ** 2 - 1 - log_var, dim = 1), dim = 0)
+
+		# Total loss
 		loss = recons_loss + kld_weight * kld_loss
 
 		return {
 			'loss': loss,
 			'Reconstruction_Loss': recons_loss.detach(),
-			'KLD':-kld_loss.detach()
+			'KLD': kld_loss.detach()
 		}
 
 	def sample(self, num_samples:int, device: int, **kwargs) -> Tensor:

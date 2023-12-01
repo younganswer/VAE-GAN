@@ -66,7 +66,7 @@ def main():
 		drop_last=False
 	)
 
-	model = train(train_loader)
+	model = train(train_loader, learning_rate=0.005, epochs=3)
 
 	# Save model
 	torch.save(model.state_dict(), './src/model/VAE/vae.pth')
