@@ -4,7 +4,7 @@ from .dataset import CustomDataset
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
-def train(train_loader, learning_rate=0.005, epochs=10):
+def train(train_loader, learning_rate=0.005, epochs=5):
 	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
 	print("Using {} device".format(device))
 	model = VAE().to(device)
