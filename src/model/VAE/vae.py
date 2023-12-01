@@ -42,11 +42,11 @@ class VAE(Base):
 			in_channels = hidden_dim
 
 		self.encoder = nn.Sequential(*modules)
-		self.fc_mu = nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim)
-		self.fc_var = nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim)
+		self.fc_mu = nn.Linear(self.hidden_dims[-1] * 2 * 2, self.latent_dim)
+		self.fc_var = nn.Linear(self.hidden_dims[-1] * 2 * 2, self.latent_dim)
 
 	def	__init_decoder(self) -> None:
-		self.decoder_input = nn.Linear(self.latent_dim, self.hidden_dims[-1] * 7 * 7)
+		self.decoder_input = nn.Linear(self.latent_dim, self.hidden_dims[-1] * 2 * 2)
 
 		modules = []
 
@@ -71,15 +71,13 @@ class VAE(Base):
 		self.output = nn.Sequential(
 			nn.ConvTranspose2d(
 				self.hidden_dims[0],
-				self.hidden_dims[0],
+				out_channels=3,
 				kernel_size=3,
 				stride=2,
 				padding=1,
 				output_padding=1
 			),
-			nn.BatchNorm2d(self.hidden_dims[0]),
-			nn.LeakyReLU(),
-			nn.Conv2d(self.hidden_dims[0], out_channels=3, kernel_size=3, padding=1),
+			nn.BatchNorm2d(3),
 			nn.Tanh()
 		)
 
@@ -93,16 +91,24 @@ class VAE(Base):
 
 	def	decode(self, z: Tensor) -> Tensor:
 		result = self.decoder_input(z)
-		result = result.view(-1, self.hidden_dims[-1], 7, 7)
+		result = result.view(-1, self.hidden_dims[-1], 2, 2)
 		result = self.decoder(result)
 		result = self.output(result)
 
 		return result
 
 	def	reparameterize(self, mu: Tensor, log_var: Tensor) -> Tensor:
+		# Current distribution
+		# mu = 0
+		# standard deviation = sqrt(e^(mu - log_var))
 		std = torch.exp(log_var / 2)
+
+		# Normal distribution
+		# epsilon ~ N(0, 1)
 		eps = torch.randn_like(std)
-		return eps * std + mu
+		z = mu + std * eps
+
+		return z
 
 	def	forward(self, input: Tensor, **kwargs) -> List[Tensor]:
 		mu, log_var = self.encode(input)
@@ -127,3 +133,13 @@ class VAE(Base):
 			'Reconstruction_Loss': recons_loss.detach(),
 			'KLD':-kld_loss.detach()
 		}
+
+	def sample(self, num_samples:int, device: int, **kwargs) -> Tensor:
+		z = torch.randn(num_samples, self.latent_dim)
+		z = z.to(device)
+		samples = self.decode(z)
+
+		return samples
+
+	def generate(self, x: Tensor, **kwargs) -> Tensor:
+		return self.forward(x)[0]
