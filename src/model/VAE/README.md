@@ -30,7 +30,9 @@ The model is trained on the CelebA dataset.
 
 ## Dataset
 
-The model is trained on the [CelebA dataset](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). The dataset contains 202,599 face images of various celebrities. The images are cropped and resized to 64 square images.
+The model is trained on the [CelebA dataset](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html).<br/>
+The dataset contains 202,599 face images of various celebrities.<br/>
+The images are cropped and resized to 64 square images.
 
 <br/><br/>
 
