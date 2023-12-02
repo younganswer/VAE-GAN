@@ -7,6 +7,7 @@
 -   [Used hyperparameters](#used-hyperparameters)
 -   [Dataset](#dataset)
 -   [Model architecture](#model-architecture)
+-   [Results](#results)
 
 <br/><br/>
 
@@ -89,3 +90,9 @@ Params size (MB): 12.22
 Estimated Total Size (MB): 15.42
 ----------------------------------------------------------------
 ```
+
+<br/><br/>
+
+## Results
+
+You can see the results in the [notebook](../../../notebook/VAE/CelebA_64_square.ipynb).
