@@ -5,7 +5,6 @@ from ...dataset import CustomDataset
 import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from matplotlib import pyplot as plt
 
 def train(train_loader, learning_rate=0.005, epochs=5):
 	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
