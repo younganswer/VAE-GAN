@@ -2,8 +2,10 @@ import os
 import sys
 import random
 
+target_dataset = input("Enter the name of the dataset: ")
+
 cur_dir = os.getcwd()
-src_dir = os.path.join(cur_dir, 'data/CelebA')
+src_dir = os.path.join(cur_dir, 'data/{}'.format(target_dataset))
 train_dir = os.path.join(src_dir, 'train')
 test_dir = os.path.join(src_dir, 'test')
 
