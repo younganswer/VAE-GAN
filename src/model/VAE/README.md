@@ -1,5 +1,5 @@
 <h1 align='center'>Variational AutoEncoder</h1>
-</br></br>
+<br/><br/>
 
 ## Index
 
@@ -8,18 +8,14 @@
 -   [Dataset](#dataset)
 -   [Model architecture](#model-architecture)
 
-</br></br>
+<br/><br/>
 
 ## Introduction
 
-<div>
-	This is a PyTorch implementation of Variational AutoEncoder (VAE) based on the paper [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114).
-</div>
-<div>
-	The model is trained on the CelebA dataset.
-</div>
+This is a PyTorch implementation of Variational AutoEncoder (VAE) based on the paper [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114).<br/>
+The model is trained on the CelebA dataset.
 
-</br></br>
+<br/><br/>
 
 ## Used hyperparameters
 
@@ -29,13 +25,13 @@
 -   Number of epochs: 5
 -   Loss function: Mean Squared Error (MSE)
 
-</br></br>
+<br/><br/>
 
 ## Dataset
 
 The model is trained on the [CelebA dataset](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). The dataset contains 202,599 face images of various celebrities. The images are cropped and resized to 64 square images.
 
-</br></br>
+<br/><br/>
 
 ## Model architecture
 
