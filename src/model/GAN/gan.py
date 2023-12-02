@@ -22,7 +22,7 @@ class GAN(Base):
 		self.hidden_dims = hidden_dims
 
 		self.generator = self.Generator(latent_dim, hidden_dims)
-		self.discriminator = self.Discriminator(latent_dim, hidden_dims.reverse())
+		self.discriminator = self.Discriminator(latent_dim, hidden_dims[::-1])
 
 	def sample(self, num_samples: int, device: int, **kwargs) -> Tensor:
 		return self.generator.sample(num_samples, device, **kwargs)
@@ -48,21 +48,27 @@ class GAN(Base):
 		):
 			super(GAN.Generator, self).__init__()
 
-			self.decoder_input = nn.Linear(latent_dim, hidden_dims[0] * 7 * 7)
+			self.latent_dim = latent_dim
+			self.hidden_dims = hidden_dims
+
+			self.__init_decoder()
+
+		def __init_decoder(self) -> None:
+			self.decoder_input = nn.Linear(self.latent_dim, self.hidden_dims[0] * 7 * 7)
 
 			modules = []
-			for i in range(len(hidden_dims) - 1):
+			for i in range(len(self.hidden_dims) - 1):
 				modules.append(
 					nn.Sequential(
 						nn.ConvTranspose2d(
-							hidden_dims[i],
-							hidden_dims[i+1],
+							self.hidden_dims[i],
+							self.hidden_dims[i+1],
 							kernel_size=3,
 							stride=2,
 							padding=1,
 							output_padding=1
 						),
-						nn.BatchNorm2d(hidden_dims[i+1]),
+						nn.BatchNorm2d(self.hidden_dims[i+1]),
 						nn.LeakyReLU()
 					)
 				)
@@ -71,7 +77,7 @@ class GAN(Base):
 
 			self.output = nn.Sequential(
 				nn.ConvTranspose2d(
-					hidden_dims[-1],
+					self.hidden_dims[-1],
 					out_channels=3,
 					kernel_size=3,
 					stride=2,
@@ -86,7 +92,7 @@ class GAN(Base):
 			z = torch.randn(num_samples, self.latent_dim)
 			z = z.to(device)
 
-			return self.decode(z)
+			return z
 
 		def forward(self, z: Tensor) -> Tensor:
 			result = self.decoder_input(z)
@@ -111,9 +117,15 @@ class GAN(Base):
 		):
 			super(GAN.Discriminator, self).__init__()
 
+			self.latent_dim = latent_dim
+			self.hidden_dims = hidden_dims
+
+			self.__init_encoder()
+
+		def __init_encoder(self) -> None:
 			modules = []
 			in_channels = 3
-			for hidden_dim in hidden_dims:
+			for hidden_dim in self.hidden_dims:
 				modules.append(
 					nn.Sequential(
 						nn.Conv2d(
@@ -131,12 +143,12 @@ class GAN(Base):
 
 			self.encoder = nn.Sequential(*modules)
 			self.fc = nn.Sequential(
-				nn.Linear(hidden_dims[-1] * 7 * 7, self.latent_dim),
+				nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim),
 				nn.LeakyReLU()
 			)
 			self.out = nn.Sequential(
 				nn.Linear(self.latent_dim, 1),
-				nn.Tanh()
+				nn.Sigmoid()
 			)
 
 		def forward(self, x: Tensor, **kwargs) -> Tensor:

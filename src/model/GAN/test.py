@@ -11,8 +11,10 @@ class TestGAN(unittest.TestCase):
 		self.model = GAN().to(self.device)
 
 	def test_summary(self):
-		samples = self.model.sample(1, self.device)
-		print(summary(self.model, samples[0], (3, 224, 224), device=self.device))
+		print("Generator")
+		print(summary(self.model.generator, (10,)))
+		print("Discriminator")
+		print(summary(self.model.discriminator, (3, 224, 224)))
 
 	def test_forward(self):
 		z = torch.randn(1, 10)

@@ -14,7 +14,7 @@ class VAE(Base):
 		super(VAE, self).__init__()
 
 		if hidden_dims is None:
-			hidden_dims = [32, 64, 128, 256, 512]
+			hidden_dims = [16, 32, 64, 128, 256]
 
 		self.latent_dim = latent_dim
 		self.hidden_dims = hidden_dims
@@ -42,11 +42,24 @@ class VAE(Base):
 			in_channels = hidden_dim
 
 		self.encoder = nn.Sequential(*modules)
-		self.fc_mu = nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim)
-		self.fc_var = nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim)
+		self.fc_mu = nn.Sequential(
+			nn.Linear(self.hidden_dims[-1] * 7 * 7, 256),
+			nn.LeakyReLU(),
+			nn.Linear(256, self.latent_dim)
+		)
+		self.fc_var = nn.Sequential(
+			nn.Linear(self.hidden_dims[-1] * 7 * 7, 256),
+			nn.LeakyReLU(),
+			nn.Linear(256, self.latent_dim)
+		)
 
 	def	__init_decoder(self) -> None:
-		self.decoder_input = nn.Linear(self.latent_dim, self.hidden_dims[-1] * 7 * 7)
+		self.decoder_input = nn.Sequential(
+			nn.Linear(self.latent_dim, 256),
+			nn.LeakyReLU(),
+			nn.Linear(256, self.hidden_dims[-1] * 7 * 7),
+			nn.LeakyReLU()
+		)
 
 		modules = []
 

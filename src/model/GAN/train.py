@@ -22,7 +22,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			loss.backward()
 			optimizer.step()
 			if (i + 1) % 100 == 0:
-				print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(
+				print('Epoch [{:02d}/{:02d}], Step [{:04d}/{}], Loss: {:.4f}'.format(
 					epoch + 1, epochs, i + 1, len(train_loader), loss.item()
 				))
 
