@@ -1,12 +1,12 @@
 # Import user-defined packages
-from .vae import VAE
-from ...dataset import CustomDataset
+from .vae		import VAE
+from ...dataset	import CustomDataset
 
 import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
-def train(train_loader, learning_rate=0.005, epochs=5):
+def train(train_loader, learning_rate=0.005, epochs=10):
 	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
 	print("Using {} device".format(device))
 	model = VAE().to(device)
@@ -18,7 +18,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			data = data.to(device)
 			optimizer.zero_grad()
 			outputs = model(data)
-			result = criterion(*outputs, M_N=0.00025)
+			result = criterion(*outputs, M_N=0.0001)
 			loss = result['loss']
 			recon_loss = result['Reconstruction_Loss']
 			kl_loss = result['KLD']
@@ -53,7 +53,7 @@ def main():
 		pin_memory=True
 	)
 
-	model = train(train_loader, learning_rate=0.0001, epochs=5)
+	model = train(train_loader, learning_rate=0.0001, epochs=10)
 
 	torch.save(model.state_dict(), './src/model/VAE/CelebA_256_square.pth')
 

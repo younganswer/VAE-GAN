@@ -9,9 +9,6 @@ class Base(ABC, nn.Module):
 	def	__init__(self):
 		super(Base, self).__init__()
 
-		self.generator = self.Generator()
-		self.discriminator = self.Discriminator()
-
 	def generate(self, input: torch.Tensor) -> torch.Tensor:
 		return self.generator(input)
 
@@ -24,12 +21,7 @@ class Base(ABC, nn.Module):
 		pass
 
 	class Generator(nn.Module):
-		def __init__(
-			self,
-			latent_dim: int,
-			hidden_dims: List,
-			**kwargs
-		):
+		def __init__(self):
 			super(Base.Generator, self).__init__()
 
 		@abstractmethod
@@ -41,12 +33,7 @@ class Base(ABC, nn.Module):
 			pass
 
 	class Discriminator(nn.Module):
-		def __init__(
-			self,
-			latent_dim: int,
-			hidden_dims: List,
-			**kwargs
-		):
+		def __init__(self):
 			super(Base.Discriminator, self).__init__()
 
 		@abstractmethod

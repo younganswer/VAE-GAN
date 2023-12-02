@@ -1,5 +1,10 @@
+# Import user-defined packages
 from .base 		import Base
 from ...types_	import *
+
+import torch
+from torch		import nn
+from torch.nn	import functional as F
 
 class GAN(Base):
 	def __init__(
@@ -11,18 +16,28 @@ class GAN(Base):
 		super(GAN, self).__init__()
 
 		if hidden_dims is None:
-			hidden_dims = [512, 256, 128, 64, 32]
+			hidden_dims = [ 512, 256, 128, 64, 32 ]
 		
 		self.latent_dim = latent_dim
 		self.hidden_dims = hidden_dims
+
 		self.generator = self.Generator(latent_dim, hidden_dims)
 		self.discriminator = self.Discriminator(latent_dim, hidden_dims.reverse())
 
-	def forward(self, x: Tensor, **kwargs) -> Tensor:
-		pass
+	def sample(self, num_samples: int, device: int, **kwargs) -> Tensor:
+		return self.generator.sample(num_samples, device, **kwargs)
 
-	def loss_function(self, x):
-		pass
+	def forward(self, z: Tensor, x: Tensor, **kwargs) -> Tensor:
+		# z: samples from latent space
+		# x: real images
+		generated_images = self.generator(z)
+		pred_fake = self.discriminator(generated_images)
+		pref_real = self.discriminator(x)
+
+		return pred_fake, pref_real
+
+	def loss_function(self, *args, **kwargs) -> Tensor:
+		return self.generator.loss_function(*args, **kwargs) + self.discriminator.loss_function(*args, **kwargs)
 
 	class Generator(Base.Generator):
 		def __init__(
@@ -36,7 +51,7 @@ class GAN(Base):
 			self.decoder_input = nn.Linear(latent_dim, hidden_dims[0] * 7 * 7)
 
 			modules = []
-			for i in range(len(hidden_dims)):
+			for i in range(len(hidden_dims) - 1):
 				modules.append(
 					nn.Sequential(
 						nn.ConvTranspose2d(
@@ -80,6 +95,12 @@ class GAN(Base):
 			result = self.output(result)
 
 			return result
+		
+		def loss_function(self, *args, **kwargs) -> Tensor:
+			pred_fake = args[0]
+			loss = F.binary_cross_entropy(pred_fake, torch.ones_like(pred_fake))
+
+			return loss
 
 	class Discriminator(Base.Discriminator):
 		def __init__(
@@ -125,3 +146,10 @@ class GAN(Base):
 			result = self.out(result)
 
 			return result
+
+		def loss_function(self, *args, **kwargs) -> Tensor:
+			pred_fake, pred_real = args[0], args[1]
+			loss = F.binary_cross_entropy(pred_fake, torch.zeros_like(pred_fake)) + \
+					F.binary_cross_entropy(pred_real, torch.ones_like(pred_real))
+
+			return loss

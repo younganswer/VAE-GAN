@@ -1,7 +1,9 @@
+# Import user-defined packages
+from .vae import VAE
+
 import torch
 import unittest
 from torchsummary import summary
-from .vae import VAE
 
 class TestVAE(unittest.TestCase):
 	def setUp(self) -> None:
