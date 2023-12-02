@@ -8,10 +8,6 @@ from ..types_ import *
 
 class CustomDataset(Dataset):
 	__dataset: Dict = {}
-	__train_size = 0.6
-	__valid_size = 0.2
-	__test_size = 0.2
-
 	def	__init__(self, root: str, split: str = "train", transform: transforms = None) -> None:
 		super(CustomDataset, self).__init__()
 		self.root = root
@@ -27,20 +23,18 @@ class CustomDataset(Dataset):
 	def	__init_dataset(self) -> None:
 		CustomDataset.__dataset[self.root] = {}
 
-		sorted_data = sorted(glob.glob(os.path.join(self.root, '*')))
-		random.seed(4242)
-		random.shuffle(sorted_data)
+		train_data = sorted(glob.glob(os.path.join(self.root, 'train', '*.jpg')))
+		test_data = sorted(glob.glob(os.path.join(self.root, 'test', '*.jpg')))
 
-		data_len = len(sorted_data)
-		train_size = int(CustomDataset.__train_size * data_len)
-		valid_size = int(CustomDataset.__valid_size * data_len)
-		test_size = int(CustomDataset.__test_size * data_len)
-
-		CustomDataset.__dataset[self.root]['train'] = sorted_data[:train_size]
-		CustomDataset.__dataset[self.root]['valid'] = sorted_data[train_size:train_size + valid_size]
-		CustomDataset.__dataset[self.root]['test'] = sorted_data[train_size + valid_size:]
-		CustomDataset.__dataset[self.root]['all'] = sorted_data
+		train_size = int(len(train_data) * 0.8)
+		valid_size = len(train_data) - train_size
 		
+		CustomDataset.__dataset[self.root]['train'] = train_data[:train_size]
+		CustomDataset.__dataset[self.root]['valid'] = train_data[train_size:]
+		CustomDataset.__dataset[self.root]['test'] = test_data
+		CustomDataset.__dataset[self.root]['all'] = train_data + test_data
+		
+		random.seed(42)
 		random.shuffle(CustomDataset.__dataset[self.root]['train'])
 		random.shuffle(CustomDataset.__dataset[self.root]['test'])
 		random.shuffle(CustomDataset.__dataset[self.root]['valid'])
