@@ -13,6 +13,7 @@
 ## Introduction
 
 This is a PyTorch implementation of Variational AutoEncoder (VAE) based on the paper [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114).
+
 The model is trained on the CelebA dataset.
 
 </br></br>
