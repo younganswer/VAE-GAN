@@ -21,9 +21,10 @@ The model is trained on the CelebA dataset.
 
 -   Batch size: 128
 -   Learning rate: 0.005
--   KL divergence weight: 0.00025
 -   Optimizer: Adam
 -   Number of epochs: 5
+-   KL divergence weight: 0.00025
+-   Latent space dimension: 10
 -   Loss function: Mean Squared Error (MSE)
 
 <br/><br/>
