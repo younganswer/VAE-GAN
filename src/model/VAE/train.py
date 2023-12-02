@@ -25,7 +25,8 @@ def train(train_loader, learning_rate=0.005, epochs=10):
 			loss.backward()
 			optimizer.step()
 			if (i + 1) % 100 == 0:
-				print('Epoch [{}/{}], Step [{:04d}/{}], Loss: {:.4f}, Recon Loss: {:.4f}, KL Loss: {:.4f}'.format(
+				# print step width to 4 digits
+				print('Epoch [{}/{}], Step [{:4d}/{}], Loss: {:.4f}, Recon Loss: {:.4f}, KL Div: {:.4f}'.format(
 					epoch + 1, epochs, i + 1, len(train_loader), loss.item(), recon_loss.item(), kl_loss.item()
 				))
 	
@@ -34,7 +35,6 @@ def train(train_loader, learning_rate=0.005, epochs=10):
 def main():
 	train_transform = transforms.Compose([
 		transforms.Resize((256, 256)),
-		transforms.RandomCrop(224),
 		transforms.RandomHorizontalFlip(0.5),
 		transforms.ToTensor(),
 		transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))

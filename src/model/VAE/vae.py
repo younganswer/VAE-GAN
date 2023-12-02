@@ -14,7 +14,7 @@ class VAE(Base):
 		super(VAE, self).__init__()
 
 		if hidden_dims is None:
-			hidden_dims = [16, 32, 64, 128, 256]
+			hidden_dims = [ 32, 64, 128, 256, 512 ]
 
 		self.latent_dim = latent_dim
 		self.hidden_dims = hidden_dims
@@ -43,12 +43,12 @@ class VAE(Base):
 
 		self.encoder = nn.Sequential(*modules)
 		self.fc_mu = nn.Sequential(
-			nn.Linear(self.hidden_dims[-1] * 7 * 7, 256),
+			nn.Linear(self.hidden_dims[-1] * 8 * 8, 256),
 			nn.LeakyReLU(),
 			nn.Linear(256, self.latent_dim)
 		)
 		self.fc_var = nn.Sequential(
-			nn.Linear(self.hidden_dims[-1] * 7 * 7, 256),
+			nn.Linear(self.hidden_dims[-1] * 8 * 8, 256),
 			nn.LeakyReLU(),
 			nn.Linear(256, self.latent_dim)
 		)
@@ -57,7 +57,7 @@ class VAE(Base):
 		self.decoder_input = nn.Sequential(
 			nn.Linear(self.latent_dim, 256),
 			nn.LeakyReLU(),
-			nn.Linear(256, self.hidden_dims[-1] * 7 * 7),
+			nn.Linear(256, self.hidden_dims[-1] * 8 * 8),
 			nn.LeakyReLU()
 		)
 
@@ -111,7 +111,7 @@ class VAE(Base):
 
 	def	decode(self, z: Tensor) -> Tensor:
 		result = self.decoder_input(z)
-		result = result.view(-1, self.hidden_dims[-1], 7, 7)
+		result = result.view(-1, self.hidden_dims[-1], 8, 8)
 		result = self.decoder(result)
 		result = self.output(result)
 
