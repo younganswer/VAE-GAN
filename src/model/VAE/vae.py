@@ -42,11 +42,11 @@ class VAE(Base):
 			in_channels = hidden_dim
 
 		self.encoder = nn.Sequential(*modules)
-		self.fc_mu = nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim)
-		self.fc_var = nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim)
+		self.fc_mu = nn.Linear(self.hidden_dims[-1] * 2 * 2, self.latent_dim)
+		self.fc_var = nn.Linear(self.hidden_dims[-1] * 2 * 2, self.latent_dim)
 
 	def	__init_decoder(self) -> None:
-		self.decoder_input = nn.Linear(self.latent_dim, self.hidden_dims[-1] * 7 * 7)
+		self.decoder_input = nn.Linear(self.latent_dim, self.hidden_dims[-1] * 2 * 2)
 
 		modules = []
 
@@ -91,7 +91,7 @@ class VAE(Base):
 
 	def	decode(self, z: Tensor) -> Tensor:
 		result = self.decoder_input(z)
-		result = result.view(-1, self.hidden_dims[-1], 7, 7)
+		result = result.view(-1, self.hidden_dims[-1], 2, 2)
 		result = self.decoder(result)
 		result = self.output(result)
 

@@ -48,7 +48,9 @@ def main():
 		dataset=train_data,
 		batch_size=128,
 		shuffle=True,
-		drop_last=True
+		drop_last=True,
+		num_workers=8,
+		pin_memory=True
 	)
 
 	model = train(train_loader, learning_rate=0.005, epochs=3)

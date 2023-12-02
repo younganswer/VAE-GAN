@@ -30,7 +30,7 @@ print("Total images: ", len(img_list))
 
 # shuffle the list
 random.shuffle(img_list)
-print("Shuffled the list.")
+print("Shuffle the list.")
 
 train_ratio = 0.8
 test_ratio = 0.2
