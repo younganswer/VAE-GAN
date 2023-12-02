@@ -25,7 +25,7 @@ $ pip install -r requirements.txt
 
 ### With cli
 
-```bash
+```
 $ python -m <src.model.[VAR|GAN].[test|train]>
 ```
 
