@@ -53,7 +53,7 @@ def main():
 		pin_memory=True
 	)
 
-	model = train(train_loader, learning_rate=0.005, epochs=3)
+	model = train(train_loader, learning_rate=0.005, epochs=5)
 
 	torch.save(model.state_dict(), './src/model/VAE/CelebA_256_square.pth')
 
