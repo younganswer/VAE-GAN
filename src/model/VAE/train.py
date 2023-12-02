@@ -1,6 +1,8 @@
+# Import user-defined packages
+from .vae import VAE
+from ...dataset import CustomDataset
+
 import torch
-from .model import VAE
-from .dataset import CustomDataset
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from matplotlib import pyplot as plt
