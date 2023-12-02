@@ -39,6 +39,8 @@ The images are cropped and resized to 64 square images.
 
 ## Model architecture
 
+-   Unit test with torchsummary
+
 ```
 ----------------------------------------------------------------
         Layer (type)               Output Shape         Param #
