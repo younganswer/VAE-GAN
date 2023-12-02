@@ -39,6 +39,8 @@ Check out the `notebook` directory.
 
 ## Licence
 
+[MIT](./LICENSE)
+
 <br/><br/>
 
 ## Contact
