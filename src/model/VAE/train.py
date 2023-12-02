@@ -52,7 +52,7 @@ def main():
 
 	model = train(train_loader, learning_rate=0.005, epochs=3)
 
-	torch.save(model.state_dict(), './src/model/VAE/vae.pth')
+	torch.save(model.state_dict(), './src/model/VAE/CelebA_64_square.pth')
 
 	return 0
 
