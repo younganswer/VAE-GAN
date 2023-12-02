@@ -1,5 +1,9 @@
-# VAE & GAN with PyTorch
-
+<h1 align='center'>VAE & GAN with PyTorch</h1>
+<div align='center'>
+	<img src='https://img.shields.io/badge/Python-3.11.5-blue'>
+	<img src='https://img.shields.io/badge/PyTorch-1.9.0-red'>
+	<img src='https://img.shields.io/badge/License-MIT-yellow.svg'>
+</div>
 <br/><br/>
 
 ## Index
