@@ -1,3 +1,6 @@
+# Import user-defined packages
+from ...types_ import *
+
 import torch
 from torch import nn
 from abc import ABC, abstractmethod
@@ -21,15 +24,29 @@ class Base(ABC, nn.Module):
 		pass
 
 	class Generator(nn.Module):
-		def __init__(self):
+		def __init__(
+			self,
+			latent_dim: int,
+			hidden_dims: List,
+			**kwargs
+		):
 			super(Base.Generator, self).__init__()
 
 		@abstractmethod
-		def forward(self, x):
+		def sample(self, num_samples: int, device: int, **kwargs) -> Tensor:
+			pass
+
+		@abstractmethod
+		def forward(self, z: Tensor) -> Tensor:
 			pass
 
 	class Discriminator(nn.Module):
-		def __init__(self):
+		def __init__(
+			self,
+			latent_dim: int,
+			hidden_dims: List,
+			**kwargs
+		):
 			super(Base.Discriminator, self).__init__()
 
 		@abstractmethod

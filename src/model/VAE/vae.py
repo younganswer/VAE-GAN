@@ -136,7 +136,7 @@ class VAE(Base):
 		return {
 			'loss': loss,
 			'Reconstruction_Loss': recons_loss.detach(),
-			'KLD': -1 * kld_loss.detach()
+			'KLD': kld_loss.detach()
 		}
 
 	def sample(self, num_samples:int, device: int, **kwargs) -> Tensor:
