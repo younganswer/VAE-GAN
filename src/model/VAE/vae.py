@@ -7,7 +7,7 @@ from ...types_	import *
 class VAE(Base):
 	def	__init__(
 		self,
-		latent_dim: int = 128,
+		latent_dim: int = 64,
 		hidden_dims: List = None,
 		**kwargs
 	) -> None:
