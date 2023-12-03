@@ -71,20 +71,13 @@ class VAE(Base):
 		self.output = nn.Sequential(
 			nn.ConvTranspose2d(
 				self.hidden_dims[0],
-				self.hidden_dims[0],
+				out_channels=3,
 				kernel_size=3,
 				stride=2,
 				padding=1,
 				output_padding=1
 			),
-			nn.BatchNorm2d(self.hidden_dims[0]),
-			nn.LeakyReLU(),
-			nn.Conv2d(
-				self.hidden_dims[0],
-				out_channels=3,
-				kernel_size=3,
-				padding=1
-			),
+			nn.BatchNorm2d(3),
 			nn.Tanh()
 		)
 
