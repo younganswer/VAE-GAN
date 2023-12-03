@@ -56,7 +56,7 @@ def main():
 
 	model = train(train_loader, learning_rate=0.0001, epochs=5)
 
-	torch.save(model.state_dict(), './src/model/VAE/CelebA_256_square.pth')
+	torch.save(model.state_dict(), './src/model/VAE/CelebA_64_square.pth')
 
 	return 0
 
