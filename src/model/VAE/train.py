@@ -25,7 +25,6 @@ def train(train_loader, learning_rate=0.005, epochs=10):
 			loss.backward()
 			optimizer.step()
 			if (i + 1) % 100 == 0:
-				# print step width to 4 digits
 				print('Epoch [{}/{}], Step [{:4d}/{}], Loss: {:.4f}, Recon Loss: {:.4f}, KL Div: {:.4f}'.format(
 					epoch + 1, epochs, i + 1, len(train_loader), loss.item(), recon_loss.item(), kl_loss.item()
 				))
@@ -36,7 +35,6 @@ def main():
 	train_transform = transforms.Compose([
 		transforms.Resize((64, 64)),
 		transforms.ToTensor(),
-		transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
 	])
 	train_data = CustomDataset(
 		root='./data/CelebA/',
@@ -48,8 +46,6 @@ def main():
 		batch_size=128,
 		shuffle=True,
 		drop_last=True,
-		num_workers=8,
-		pin_memory=True
 	)
 
 	model = train(train_loader, learning_rate=0.005, epochs=5)
