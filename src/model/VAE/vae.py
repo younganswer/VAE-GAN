@@ -42,24 +42,11 @@ class VAE(Base):
 			in_channels = hidden_dim
 
 		self.encoder = nn.Sequential(*modules)
-		self.fc_mu = nn.Sequential(
-			nn.Linear(self.hidden_dims[-1] * 8 * 8, 256),
-			nn.LeakyReLU(),
-			nn.Linear(256, self.latent_dim)
-		)
-		self.fc_var = nn.Sequential(
-			nn.Linear(self.hidden_dims[-1] * 8 * 8, 256),
-			nn.LeakyReLU(),
-			nn.Linear(256, self.latent_dim)
-		)
+		self.fc_mu = nn.Linear(self.hidden_dims[-1] * 8 * 8, self.latent_dim)
+		self.fc_var = nn.Linear(self.hidden_dims[-1] * 8 * 8, self.latent_dim)
 
 	def	__init_decoder(self) -> None:
-		self.decoder_input = nn.Sequential(
-			nn.Linear(self.latent_dim, 256),
-			nn.LeakyReLU(),
-			nn.Linear(256, self.hidden_dims[-1] * 8 * 8),
-			nn.LeakyReLU()
-		)
+		self.decoder_input = nn.Linear(self.latent_dim, self.hidden_dims[-1] * 8 * 8)
 
 		modules = []
 
