@@ -21,10 +21,10 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			data = data.to(device)
 
 			# Normalize data to [-1, 1]
-			min_val = torch.min(data)
-			max_val = torch.max(data)
-			data = (data - min_val) / (max_val - min_val)
-			data = (data - 0.5) / 0.5
+			#min_val = torch.min(data)
+			#max_val = torch.max(data)
+			#data = (data - min_val) / (max_val - min_val)
+			#data = (data - 0.5) / 0.5
 
 			# Add noise to label			
 			noise_factor = 0.1
@@ -39,7 +39,6 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			real_loss = F.mse_loss(pred_real, real_label)
 			if (i + 1) % 16 == 0: # Flip label per 16 steps
 				real_loss = F.mse_loss(pred_real, fake_label)
-			real_loss.backward()
 
 			# Train fake data
 			fake = generator(model.sample(data.shape[0], device))
@@ -47,9 +46,9 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			fake_loss = F.mse_loss(pred_fake, fake_label)
 			if (i + 1) % 16 == 0: # Flip label per 16 steps
 				fake_loss = F.mse_loss(pred_fake, real_label)
-			fake_loss.backward()
 
 			discriminator_loss = real_loss + fake_loss / 2
+			discriminator_loss.backward()
 			discriminator_optimizer.step()
 			# ----------------------------------------------------------------------------------
 
