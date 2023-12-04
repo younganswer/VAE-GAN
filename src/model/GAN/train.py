@@ -25,12 +25,12 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			max_val = data.max()
 			data = (data - min_val) / (max_val - min_val)
 			data = (data - 0.5) / 0.5
-			
-			# Set real_label with gaussian noise
+
+			# Add noise to label			
 			noise_factor = 0.1
 			noise = torch.randn(data.shape[0], 1, device=device) * noise_factor
-			real_label = torch.ones(data.shape[0], 1, device=device) - noise
-			fake_label = torch.zeros(data.shape[0], 1, device=device) + noise
+			real_label = torch.ones(data.shape[0], 1, device=device) + noise
+			fake_label = torch.zeros(data.shape[0], 1, device=device) + 0.1 + noise
 
 			# Train Discriminator --------------------------------------------------------------
 			# Train real data
