@@ -37,7 +37,16 @@ class GAN(Base):
 		return pred_fake, pref_real
 
 	def loss_function(self, *args, **kwargs) -> Tensor:
-		return self.generator.loss_function(*args, **kwargs) + self.discriminator.loss_function(*args, **kwargs)
+		pred_fake, pred_real = args[0], args[1]
+		generator_loss = self.generator.loss_function(pred_fake, **kwargs)
+		discriminator_loss = self.discriminator.loss_function(pred_fake, pred_real, **kwargs)
+		loss = generator_loss + discriminator_loss
+		
+		return {
+			'Loss': loss,
+			'Generator_Loss': generator_loss,
+			'Discriminator_Loss': discriminator_loss
+		}
 
 	class Generator(Base.Generator):
 		def __init__(

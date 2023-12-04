@@ -19,12 +19,15 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			sample = model.sample(data.shape[0], device)
 			optimizer.zero_grad()
 			outputs = model(sample, data)
-			loss = criterion(*outputs)
+			result = criterion(*outputs)
+			loss = result['Loss']
+			generator_loss = result['Generator_Loss']
+			discriminator_loss = result['Discriminator_Loss']
 			loss.backward()
 			optimizer.step()
 			if (i + 1) % 100 == 0:
-				print('Epoch [{}/{}], Step [{:4d}/{}], Loss: {:.4f}'.format(
-					epoch + 1, epochs, i + 1, len(train_loader), loss.item()
+				print('Epoch [{}/{}], Step [{:4d}/{}], Loss: {:.4f}, Generator Loss: {:.4f}, Discriminator Loss: {:.4f}'.format(
+					epoch + 1, epochs, i + 1, len(train_loader), loss.item(), generator_loss.item(), discriminator_loss.item()
 				))
 
 	return model
