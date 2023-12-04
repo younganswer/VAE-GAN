@@ -10,24 +10,41 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
 	print("Using {} device".format(device))
 	model = GAN().to(device)
-	optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-	criterion = model.loss_function
+	generator = model.generator
+	discriminator = model.discriminator
+	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
+	discriminator_optimizer = torch.optim.Adam(discriminator.parameters(), lr=learning_rate)
 
 	for epoch in range(epochs):
 		for i, data in enumerate(train_loader):
 			data = data.to(device)
-			sample = model.sample(data.shape[0], device)
-			optimizer.zero_grad()
-			outputs = model(sample, data)
-			result = criterion(*outputs)
-			loss = result['Loss']
-			generator_loss = result['Generator_Loss']
-			discriminator_loss = result['Discriminator_Loss']
-			loss.backward()
-			optimizer.step()
+
+			# Train Generator ------------------------------------------------------------------
+			generator_optimizer.zero_grad()
+			generated_image = generator(model.sample(model.latent_dim, device))
+			pred_fake = discriminator(generated_image.detach())
+			generator_loss = generator.loss_function(pred_fake)
+			generator_loss.backward()
+			generator_optimizer.step()
+			# ----------------------------------------------------------------------------------
+
+			# Train Discriminator --------------------------------------------------------------
+			discriminator_optimizer.zero_grad()
+			pred_fake = discriminator(generated_image.detach())
+			pred_real = discriminator(data)
+			discriminator_loss = discriminator.loss_function(pred_fake, pred_real)
+			discriminator_loss.backward()
+			discriminator_optimizer.step()
+			# ----------------------------------------------------------------------------------
+
 			if (i + 1) % 100 == 0:
-				print('Epoch [{}/{}], Step [{:4d}/{}], Loss: {:.4f}, Generator Loss: {:.4f}, Discriminator Loss: {:.4f}'.format(
-					epoch + 1, epochs, i + 1, len(train_loader), loss.item(), generator_loss.item(), discriminator_loss.item()
+				print("Epoch [{}/{}], Step [{:4d}/{}], Generator Loss: {:.4f}, Discriminator Loss: {:.4f}".format(
+					epoch + 1,
+					epochs,
+					i + 1,
+					len(train_loader),
+					generator_loss.item(),
+					discriminator_loss.item()
 				))
 
 	return model

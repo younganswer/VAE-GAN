@@ -9,24 +9,14 @@ class Base(ABC, nn.Module):
 	def	__init__(self):
 		super(Base, self).__init__()
 
-	def generate(self, input: torch.Tensor) -> torch.Tensor:
-		return self.generator(input)
-
 	@abstractmethod
-	def forward(self, x):
+	def sample(self, num_samples: int, device: int, **kwargs) -> Tensor:
 		pass
-
-	@abstractmethod
-	def loss_function(self, x):
-		pass
-
+	
 	class Generator(nn.Module):
 		def __init__(self):
 			super(Base.Generator, self).__init__()
 
-		@abstractmethod
-		def sample(self, num_samples: int, device: int, **kwargs) -> Tensor:
-			pass
 
 		@abstractmethod
 		def forward(self, z: Tensor) -> Tensor:

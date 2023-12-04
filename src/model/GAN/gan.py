@@ -25,28 +25,10 @@ class GAN(Base):
 		self.discriminator = self.Discriminator(latent_dim, hidden_dims[::-1])
 
 	def sample(self, num_samples: int, device: int, **kwargs) -> Tensor:
-		return self.generator.sample(num_samples, device, **kwargs)
+		z = torch.randn(num_samples, self.latent_dim)
+		z = z.to(device)
 
-	def forward(self, z: Tensor, x: Tensor, **kwargs) -> Tensor:
-		# x: real images
-		# z: samples from latent space
-		generated_images = self.generator(z)
-		pred_fake = self.discriminator(generated_images.detach())
-		pref_real = self.discriminator(x)
-
-		return pred_fake, pref_real
-
-	def loss_function(self, *args, **kwargs) -> Tensor:
-		pred_fake, pred_real = args[0], args[1]
-		generator_loss = self.generator.loss_function(pred_fake, **kwargs)
-		discriminator_loss = self.discriminator.loss_function(pred_fake, pred_real, **kwargs)
-		loss = generator_loss + discriminator_loss
-
-		return {
-			'Loss': loss,
-			'Generator_Loss': generator_loss,
-			'Discriminator_Loss': discriminator_loss
-		}
+		return z
 
 	class Generator(Base.Generator):
 		def __init__(
@@ -104,13 +86,7 @@ class GAN(Base):
 				nn.Tanh()
 			)
 		
-		def sample(self, num_samples: int, device: int, **kwargs) -> Tensor:
-			z = torch.randn(num_samples, self.latent_dim)
-			z = z.to(device)
-
-			return z
-
-		def forward(self, z: Tensor) -> Tensor:
+		def forward(self, z: Tensor, **kwargs) -> Tensor:
 			result = self.decoder_input(z)
 			result = result.view(-1, self.hidden_dims[0], 2, 2)
 			result = self.decoder(result)
