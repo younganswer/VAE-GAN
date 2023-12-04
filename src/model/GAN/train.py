@@ -23,8 +23,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			loss = result['Loss']
 			generator_loss = result['Generator_Loss']
 			discriminator_loss = result['Discriminator_Loss']
-			generator_loss.backward()
-			discriminator_loss.backward()
+			loss.backward()
 			optimizer.step()
 			if (i + 1) % 100 == 0:
 				print('Epoch [{}/{}], Step [{:4d}/{}], Loss: {:.4f}, Generator Loss: {:.4f}, Discriminator Loss: {:.4f}'.format(
