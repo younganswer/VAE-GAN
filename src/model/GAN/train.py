@@ -84,7 +84,7 @@ def main():
 		drop_last=True,
 	)
 
-	model = train(train_loader, learning_rate=0.005, epochs=5)
+	model = train(train_loader, learning_rate=0.005, epochs=3)
 
 	torch.save(model.state_dict(), './src/model/GAN/CelebA_64_square.pth')
 
