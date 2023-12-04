@@ -5,6 +5,7 @@ from ...dataset	import CustomDataset
 import torch
 from torch.utils.data	import DataLoader
 from torchvision		import transforms
+from torch.nn			import functional as F
 
 def train(train_loader, learning_rate=0.005, epochs=5):
 	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
@@ -19,22 +20,28 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 		for i, data in enumerate(train_loader):
 			data = data.to(device)
 
-			# Train Generator ------------------------------------------------------------------
-			generator_optimizer.zero_grad()
-			generated_image = generator(model.sample(data.shape[0], device))
-			pred_fake = discriminator(generated_image)
-			generator_loss = generator.loss_function(pred_fake)
-			generator_loss.backward()
-			generator_optimizer.step()
+			# Train Discriminator --------------------------------------------------------------
+			# Train real data
+			discriminator.zero_grad()
+			pred_real = discriminator(data)
+			real_loss = F.mse_loss(pred_real, torch.ones_like(pred_real))
+			real_loss.backward()
+
+			# Train fake data
+			fake = generator(model.sample(data.shape[0], device))
+			pred_fake = discriminator(fake.detach())
+			fake_loss = F.mse_loss(pred_fake, torch.zeros_like(pred_fake))
+
+			discriminator_loss = real_loss + fake_loss / 2
+			discriminator_optimizer.step()
 			# ----------------------------------------------------------------------------------
 
-			# Train Discriminator --------------------------------------------------------------
-			discriminator_optimizer.zero_grad()
-			pred_fake = discriminator(generated_image.detach())
-			pred_real = discriminator(data)
-			discriminator_loss = discriminator.loss_function(pred_fake, pred_real)
-			discriminator_loss.backward()
-			discriminator_optimizer.step()
+			# Train Generator ------------------------------------------------------------------
+			generator.zero_grad()
+			pred_fake = discriminator(fake)
+			generator_loss = F.mse_loss(pred_fake, torch.ones_like(pred_fake))
+			generator_loss.backward()
+			generator_optimizer.step()
 			# ----------------------------------------------------------------------------------
 
 			if (i + 1) % 100 == 0:

@@ -6,6 +6,7 @@ import torch
 from torch		import nn
 from torch.nn	import functional as F
 
+# Deep Convolutional GAN with Least Squares
 class GAN(Base):
 	def __init__(
 		self,
@@ -93,12 +94,6 @@ class GAN(Base):
 			result = self.output(result)
 
 			return result
-		
-		def loss_function(self, *args, **kwargs) -> Tensor:
-			pred_fake = args[0]
-			loss = F.binary_cross_entropy(pred_fake, torch.ones_like(pred_fake))
-
-			return loss
 
 	class Discriminator(Base.Discriminator):
 		def __init__(
@@ -150,11 +145,3 @@ class GAN(Base):
 			result = self.out(result)
 
 			return result
-
-		def loss_function(self, *args, **kwargs) -> Tensor:
-			pred_fake, pred_real = args[0], args[1]
-			fake_loss = F.binary_cross_entropy(pred_fake, torch.zeros_like(pred_fake))
-			real_loss = F.binary_cross_entropy(pred_real, torch.ones_like(pred_real))
-			loss = (fake_loss + real_loss) / 2
-
-			return loss
