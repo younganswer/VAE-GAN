@@ -32,7 +32,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			discriminator_optimizer.zero_grad()
 			pred_fake = discriminator(generated_image.detach())
 			pred_real = discriminator(data)
-			discriminator_loss = discriminator.loss_function(pred_fake, pred_real)
+			discriminator_loss = 10 * discriminator.loss_function(pred_fake, pred_real)
 			discriminator_loss.backward()
 			discriminator_optimizer.step()
 			# ----------------------------------------------------------------------------------
