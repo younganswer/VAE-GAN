@@ -20,14 +20,14 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 		for i, data in enumerate(train_loader):
 			data = data.to(device)
 
-			# Noramlize data to [-1, 1]
+			# Normalize data to [-1, 1]
 			min_val = data.min()
 			max_val = data.max()
 			data = (data - min_val) / (max_val - min_val)
 			data = (data - 0.5) / 0.5
 
 			# Add noise to label			
-			noise_factor = 0.1
+			noise_factor = 0.01
 			noise = torch.randn(data.shape[0], 1, device=device) * noise_factor
 			real_label = torch.ones(data.shape[0], 1, device=device) + noise
 			fake_label = torch.zeros(data.shape[0], 1, device=device) + 0.1 + noise
@@ -36,8 +36,8 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			# Train real data
 			discriminator.zero_grad()
 			pred_real = discriminator(data)
-			# Flip label per 10 steps
-			if i % 10 == 0:
+			# Flip label per 100 steps
+			if (i + 1) % 100 == 0:
 				real_loss = F.binary_cross_entropy(pred_real, fake_label)
 			else:
 				real_loss = F.binary_cross_entropy(pred_real, real_label)
@@ -56,8 +56,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			# Train Generator ------------------------------------------------------------------
 			generator.zero_grad()
 			pred_fake = discriminator(fake)
-			# Use max log(D(G(z))) instead of min log(1 - D(G(z))) for better gradient
-			generator_loss = -F.binary_cross_entropy(pred_fake, real_label)
+			generator_loss = F.binary_cross_entropy(pred_fake, real_label)
 			generator_loss.backward()
 			generator_optimizer.step()
 			# ----------------------------------------------------------------------------------
