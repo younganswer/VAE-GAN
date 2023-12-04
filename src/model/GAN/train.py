@@ -16,8 +16,9 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 	for epoch in range(epochs):
 		for i, data in enumerate(train_loader):
 			data = data.to(device)
+			sample = model.sample(data.shape[0], device)
 			optimizer.zero_grad()
-			outputs = model(data)
+			outputs = model(sample, data)
 			loss = criterion(*outputs)
 			loss.backward()
 			optimizer.step()

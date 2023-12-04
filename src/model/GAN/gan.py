@@ -28,8 +28,8 @@ class GAN(Base):
 		return self.generator.sample(num_samples, device, **kwargs)
 
 	def forward(self, z: Tensor, x: Tensor, **kwargs) -> Tensor:
-		# z: samples from latent space
 		# x: real images
+		# z: samples from latent space
 		generated_images = self.generator(z)
 		pred_fake = self.discriminator(generated_images)
 		pref_real = self.discriminator(x)
