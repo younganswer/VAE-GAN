@@ -31,6 +31,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			fake = generator(model.sample(data.shape[0], device))
 			pred_fake = discriminator(fake.detach())
 			fake_loss = F.mse_loss(pred_fake, torch.zeros_like(pred_fake))
+			fake_loss.backward()
 
 			discriminator_loss = real_loss + fake_loss / 2
 			discriminator_optimizer.step()
