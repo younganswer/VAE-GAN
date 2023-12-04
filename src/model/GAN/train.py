@@ -17,11 +17,13 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 
 	for epoch in range(epochs):
 		for i, data in enumerate(train_loader):
+			# Preprocess data -----------------------------------------------------------------
 			data = data.to(device)
+			generated_image = generator(model.sample(data.shape[0], device))
+			# ----------------------------------------------------------------------------------
 
 			# Train Generator ------------------------------------------------------------------
 			generator_optimizer.zero_grad()
-			generated_image = generator(model.sample(data.shape[0], device))
 			pred_fake = discriminator(generated_image)
 			generator_loss = generator.loss_function(pred_fake)
 			generator_loss.backward()

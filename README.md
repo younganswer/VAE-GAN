@@ -10,6 +10,7 @@
 
 -   [Installation](#installation)
 -   [Usage](#usage)
+-   [Results](#results)
 -   [Licence](#licence)
 -   [Contact](#contact)
 
@@ -27,19 +28,22 @@ $ pip install -r requirements.txt
 
 ## Usage
 
-### With cli
-
-```
-$ python -m <src.model.[VAR|GAN].[test|train]>
-```
-
-<br/>
-
-### With jupyter notebook
-
 Check out the `notebook` directory.
 
 <br/><br/>
+
+## Results
+
+<!-- make table -->
+<!-- first row: VAE -->
+<!-- second row: GAN -->
+<!-- first column: Random sampled 5 square images -->
+<!-- second column: 1 sample & 5 square variations -->
+
+|                            VAE                            |                            GAN                            |
+| :-------------------------------------------------------: | :-------------------------------------------------------: |
+| <img src='./assets/vae_random_sampled.png' width='300px'> | <img src='./assets/gan_random_sampled.png' width='300px'> |
+|    <img src='./assets/vae_sampled.png' width='300px'>     |    <img src='./assets/gan_sampled.png' width='300px'>     |
 
 ## Licence
 

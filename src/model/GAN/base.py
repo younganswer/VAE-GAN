@@ -2,8 +2,8 @@
 from ...types_ import *
 
 import torch
-from torch import nn
-from abc import ABC, abstractmethod
+from torch	import nn
+from abc	import ABC, abstractmethod
 
 class Base(ABC, nn.Module):
 	def	__init__(self):
