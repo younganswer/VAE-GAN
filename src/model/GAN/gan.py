@@ -133,7 +133,10 @@ class GAN(Base):
 				nn.Linear(self.hidden_dims[-1] * 2 * 2, self.latent_dim),
 				nn.LeakyReLU()
 			)
-			self.out = nn.Linear(self.latent_dim, 1)
+			self.out = nn.Sequential(
+				nn.Linear(self.latent_dim, 1),
+				nn.Sigmoid()
+			)
 
 		def forward(self, x: Tensor, **kwargs) -> Tensor:
 			result = self.encoder(x)

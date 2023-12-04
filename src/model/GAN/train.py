@@ -24,13 +24,13 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			# Train real data
 			discriminator.zero_grad()
 			pred_real = discriminator(data)
-			real_loss = F.mse_loss(pred_real, torch.ones_like(pred_real))
+			real_loss = F.binary_cross_entropy(pred_real, torch.ones_like(pred_real))
 			real_loss.backward()
 
 			# Train fake data
 			fake = generator(model.sample(data.shape[0], device))
 			pred_fake = discriminator(fake.detach())
-			fake_loss = F.mse_loss(pred_fake, torch.zeros_like(pred_fake))
+			fake_loss = F.binary_cross_entropy(pred_fake, torch.zeros_like(pred_fake))
 			fake_loss.backward()
 
 			discriminator_loss = real_loss + fake_loss / 2
@@ -40,7 +40,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			# Train Generator ------------------------------------------------------------------
 			generator.zero_grad()
 			pred_fake = discriminator(fake)
-			generator_loss = F.mse_loss(pred_fake, torch.ones_like(pred_fake))
+			generator_loss = F.binary_cross_entropy(pred_fake, torch.ones_like(pred_fake))
 			generator_loss.backward()
 			generator_optimizer.step()
 			# ----------------------------------------------------------------------------------
