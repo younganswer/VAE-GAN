@@ -38,9 +38,9 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			pred_real = discriminator(data)
 			# Flip label per 100 steps
 			if (i + 1) % 100 == 0:
-				real_loss = F.binary_cross_entropy(pred_real, fake_label)
+				real_loss = F.mse_loss(pred_real, fake_label)
 			else:
-				real_loss = F.binary_cross_entropy(pred_real, real_label)
+				real_loss = F.mse_loss(pred_real, real_label)
 			real_loss.backward()
 
 			# Train fake data
@@ -48,9 +48,9 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			pred_fake = discriminator(fake.detach())
 			# Flip label per 100 steps
 			if (i + 1) % 100 == 0:
-				fake_loss = F.binary_cross_entropy(pred_fake, real_label)
+				fake_loss = F.mse_loss(pred_fake, real_label)
 			else:
-				fake_loss = F.binary_cross_entropy(pred_fake, fake_label)
+				fake_loss = F.mse_loss(pred_fake, fake_label)
 			fake_loss.backward()
 
 			discriminator_loss = real_loss + fake_loss / 2
@@ -60,7 +60,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			# Train Generator ------------------------------------------------------------------
 			generator.zero_grad()
 			pred_fake = discriminator(fake)
-			generator_loss = F.binary_cross_entropy(pred_fake, real_label)
+			generator_loss = F.mse_loss(pred_fake, real_label)
 			generator_loss.backward()
 			generator_optimizer.step()
 			# ----------------------------------------------------------------------------------
