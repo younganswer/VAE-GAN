@@ -153,7 +153,8 @@ class GAN(Base):
 
 		def loss_function(self, *args, **kwargs) -> Tensor:
 			pred_fake, pred_real = args[0], args[1]
-			loss = F.binary_cross_entropy(pred_fake, torch.zeros_like(pred_fake)) + \
-					F.binary_cross_entropy(pred_real, torch.ones_like(pred_real))
+			fake_loss = F.binary_cross_entropy(pred_fake, torch.zeros_like(pred_fake))
+			real_loss = F.binary_cross_entropy(pred_real, torch.ones_like(pred_real))
+			loss = (fake_loss + real_loss) / 2
 
 			return loss
