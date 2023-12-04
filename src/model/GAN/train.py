@@ -21,13 +21,13 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			data = data.to(device)
 
 			# Normalize data to [-1, 1]
-			min_val = data.min()
-			max_val = data.max()
+			min_val = torch.min(data)
+			max_val = torch.max(data)
 			data = (data - min_val) / (max_val - min_val)
 			data = (data - 0.5) / 0.5
 
 			# Add noise to label			
-			noise_factor = 0.01
+			noise_factor = 0.1
 			noise = torch.randn(data.shape[0], 1, device=device) * noise_factor
 			real_label = torch.ones(data.shape[0], 1, device=device) + noise
 			fake_label = torch.zeros(data.shape[0], 1, device=device) + 0.1 + noise

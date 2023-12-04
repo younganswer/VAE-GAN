@@ -3,7 +3,8 @@ from .gan import GAN
 
 import torch
 import unittest
-from torchsummary import summary
+from torchsummary	import summary
+from torch.nn		import functional as F
 
 class TestGAN(unittest.TestCase):
 	def setUp(self) -> None:
@@ -27,7 +28,7 @@ class TestGAN(unittest.TestCase):
 		z = torch.randn(1, 128)
 		x = self.generator(z)
 		pred_fake = self.discriminator(x)
-		loss = self.generator.loss_function(pred_fake)
+		loss = F.mse_loss(pred_fake, torch.ones(1, 1))
 		self.assertEqual(loss.shape, ())
 
 	def test_discriminator_forward(self):
@@ -40,8 +41,10 @@ class TestGAN(unittest.TestCase):
 		y = self.discriminator(x)
 		pred_fake = self.discriminator(x)
 		pred_real = self.discriminator(x)
-		loss = self.discriminator.loss_function(pred_fake, pred_real)
-		self.assertEqual(loss.shape, ())
+		fake_loss = F.mse_loss(pred_fake, torch.zeros(1, 1))
+		real_loss = F.mse_loss(pred_real, torch.ones(1, 1))
+		self.assertEqual(fake_loss.shape, ())
+		self.assertEqual(real_loss.shape, ())
 
 if __name__ == '__main__':
 	unittest.main()
