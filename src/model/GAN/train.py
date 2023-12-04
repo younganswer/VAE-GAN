@@ -71,7 +71,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 					epochs,
 					i + 1,
 					len(train_loader),
-					-generator_loss.item(),
+					generator_loss.item(),
 					discriminator_loss.item()
 				))
 
