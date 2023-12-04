@@ -25,8 +25,10 @@ The model is trained on the CelebA dataset.
 -   Optimizer: Adam
 -   Number of epochs: 5
 -   KL divergence weight: 0.00025
--   Latent space dimension: 10
+-   Latent space dimension: 128
 -   Loss function: Mean Squared Error (MSE)
+-   Activation function: Leaky ReLU
+-   Image size: 64 square
 
 <br/><br/>
 
@@ -61,9 +63,9 @@ The images are cropped and resized to 64 square images.
            Conv2d-13            [-1, 512, 2, 2]       1,180,160
       BatchNorm2d-14            [-1, 512, 2, 2]           1,024
         LeakyReLU-15            [-1, 512, 2, 2]               0
-           Linear-16                   [-1, 10]          20,490
-           Linear-17                   [-1, 10]          20,490
-           Linear-18                 [-1, 2048]          22,528
+           Linear-16                  [-1, 128]         262,272
+           Linear-17                  [-1, 128]         262,272
+           Linear-18                 [-1, 2048]         264,192
   ConvTranspose2d-19            [-1, 256, 4, 4]       1,179,904
       BatchNorm2d-20            [-1, 256, 4, 4]             512
         LeakyReLU-21            [-1, 256, 4, 4]               0
@@ -80,14 +82,14 @@ The images are cropped and resized to 64 square images.
       BatchNorm2d-32            [-1, 3, 64, 64]               6
              Tanh-33            [-1, 3, 64, 64]               0
 ================================================================
-Total params: 3,203,101
-Trainable params: 3,203,101
+Total params: 3,928,329
+Trainable params: 3,928,329
 Non-trainable params: 0
 ----------------------------------------------------------------
 Input size (MB): 0.05
 Forward/backward pass size (MB): 3.16
-Params size (MB): 12.22
-Estimated Total Size (MB): 15.42
+Params size (MB): 14.99
+Estimated Total Size (MB): 18.19
 ----------------------------------------------------------------
 ```
 

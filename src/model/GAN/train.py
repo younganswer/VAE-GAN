@@ -22,7 +22,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			loss.backward()
 			optimizer.step()
 			if (i + 1) % 100 == 0:
-				print('Epoch [{:02d}/{:02d}], Step [{:04d}/{}], Loss: {:.4f}'.format(
+				print('Epoch [{}/{}], Step [{:4d}/{}], Loss: {:.4f}'.format(
 					epoch + 1, epochs, i + 1, len(train_loader), loss.item()
 				))
 
@@ -30,11 +30,9 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 
 def main():
 	transform = transforms.Compose([
-		transforms.Resize((256, 256)),
-		transforms.RandomCrop(224),
-		transforms.RandomHorizontalFlip(0.5),
+		transforms.Resize((64, 64)),
 		transforms.ToTensor(),
-		transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+		transforms.Normalize((0.5,), (0.5,))
 	])
 	train_data = CustomDataset(
 		root='./data/CelebA/',
@@ -46,13 +44,11 @@ def main():
 		batch_size=128,
 		shuffle=True,
 		drop_last=True,
-		num_workers=8,
-		pin_memory=True
 	)
 
-	model = train(train_loader, learning_rate=0.0001, epochs=5)
+	model = train(train_loader, learning_rate=0.005, epochs=5)
 
-	torch.save(model.state_dict(), './src/model/GAN/CelebA_256_square.pth')
+	torch.save(model.state_dict(), './src/model/GAN/CelebA_64_square.pth')
 
 	return 0
 

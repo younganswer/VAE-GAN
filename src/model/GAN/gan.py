@@ -9,7 +9,7 @@ from torch.nn	import functional as F
 class GAN(Base):
 	def __init__(
 		self,
-		latent_dim: int = 10,
+		latent_dim: int = 128,
 		hidden_dims: List = None,
 		**kwargs
 	):
@@ -54,7 +54,7 @@ class GAN(Base):
 			self.__init_decoder()
 
 		def __init_decoder(self) -> None:
-			self.decoder_input = nn.Linear(self.latent_dim, self.hidden_dims[0] * 7 * 7)
+			self.decoder_input = nn.Linear(self.latent_dim, self.hidden_dims[0] * 2 * 2)
 
 			modules = []
 			for i in range(len(self.hidden_dims) - 1):
@@ -103,7 +103,7 @@ class GAN(Base):
 
 		def forward(self, z: Tensor) -> Tensor:
 			result = self.decoder_input(z)
-			result = result.view(-1, self.hidden_dims[0], 7, 7)
+			result = result.view(-1, self.hidden_dims[0], 2, 2)
 			result = self.decoder(result)
 			result = self.output(result)
 
@@ -150,7 +150,7 @@ class GAN(Base):
 
 			self.encoder = nn.Sequential(*modules)
 			self.fc = nn.Sequential(
-				nn.Linear(self.hidden_dims[-1] * 7 * 7, self.latent_dim),
+				nn.Linear(self.hidden_dims[-1] * 2 * 2, self.latent_dim),
 				nn.LeakyReLU()
 			)
 			self.out = nn.Sequential(
