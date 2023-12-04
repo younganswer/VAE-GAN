@@ -38,7 +38,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			discriminator.zero_grad()
 			pred_real = discriminator(data)
 			real_loss = F.mse_loss(pred_real, real_label)
-			if (i + 1) % 200 == 0: # Flip label per 200 steps
+			if (i + 1) % 64 == 0: # Flip label per 64 steps
 				real_loss = F.mse_loss(pred_real, fake_label)
 			real_loss.backward()
 
@@ -46,7 +46,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			fake = generator(model.sample(data.shape[0], device))
 			pred_fake = discriminator(fake.detach())
 			fake_loss = F.mse_loss(pred_fake, fake_label)
-			if (i + 1) % 200 == 0: # Flip label per 200 steps
+			if (i + 1) % 64 == 0: # Flip label per 64 steps
 				fake_loss = F.mse_loss(pred_fake, real_label)
 			fake_loss.backward()
 
