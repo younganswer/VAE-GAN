@@ -23,7 +23,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			generator_optimizer.zero_grad()
 			generated_image = generator(model.sample(data.shape[0], device))
 			pred_fake = discriminator(generated_image)
-			generator_loss = generator.loss_function(pred_fake)
+			generator_loss = 5 * generator.loss_function(pred_fake)
 			generator_loss.backward()
 			generator_optimizer.step()
 			# ----------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			discriminator_optimizer.zero_grad()
 			pred_fake = discriminator(generated_image.detach())
 			pred_real = discriminator(data)
-			discriminator_loss = 0.5 * discriminator.loss_function(pred_fake, pred_real)
+			discriminator_loss = discriminator.loss_function(pred_fake, pred_real)
 			discriminator_loss.backward()
 			discriminator_optimizer.step()
 			# ----------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ def main():
 		drop_last=True,
 	)
 
-	model = train(train_loader, learning_rate=0.005, epochs=5)
+	model = train(train_loader, learning_rate=0.005, epochs=3)
 
 	torch.save(model.state_dict(), './src/model/GAN/CelebA_64_square.pth')
 
