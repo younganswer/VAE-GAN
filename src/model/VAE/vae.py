@@ -71,8 +71,8 @@ class VAE(Base):
 		}
 
 	def sample(self, num_samples:int, device: int, **kwargs) -> Tensor:
-		z = torch.randn(num_samples, self.latent_dim)
-		z = z.to(device)
+		samples = torch.randn(num_samples, self.latent_dim)
+		samples = samples.to(device)
 
 		return samples
 
