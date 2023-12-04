@@ -31,7 +31,7 @@ class GAN(Base):
 		# x: real images
 		# z: samples from latent space
 		generated_images = self.generator(z)
-		pred_fake = self.discriminator(generated_images)
+		pred_fake = self.discriminator(generated_images.detach())
 		pref_real = self.discriminator(x)
 
 		return pred_fake, pref_real
@@ -41,7 +41,7 @@ class GAN(Base):
 		generator_loss = self.generator.loss_function(pred_fake, **kwargs)
 		discriminator_loss = self.discriminator.loss_function(pred_fake, pred_real, **kwargs)
 		loss = generator_loss + discriminator_loss
-		
+
 		return {
 			'Loss': loss,
 			'Generator_Loss': generator_loss,
