@@ -40,10 +40,10 @@ Check out the `notebook` directory.
 <!-- first column: Random sampled 5 square images -->
 <!-- second column: 1 sample & 5 square variations -->
 
-|     |                                     Generated images                                     |                           1 sample with 5 square variations                            |
-| :-: | :--------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: |
-| VAE | <img src='./assets/VAE/VAE_random_sampled_5_square_images.png' width='256' height='256'> | <img src='./assets/VAE/VAE_1_sample_5_square_variations.png' width='256' height='256'> |
-| GAN | <img src='./assets/GAN/GAN_random_sampled_5_square_images.png' width='256' height='256'> | <img src='./assets/GAN/GAN_1_sample_5_square_variations.png' width='256' height='256'> |
+|     |                            Generated images                            |                            1 sample with 5 square variations                            |
+| :-: | :--------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
+| VAE | <img src='./assets/VAE_generated_images.png' width='256' height='256'> | <img src='./assets/VAE_1_sample_with_5_square_variations.png' width='256' height='256'> |
+| GAN | <img src='./assets/GAN_generated_images.png' width='256' height='256'> | <img src='./assets/GAN_1_sample_with_5_square_variations.png' width='256' height='256'> |
 
 ## Licence
 
