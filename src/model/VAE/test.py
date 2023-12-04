@@ -19,7 +19,7 @@ class TestVAE(unittest.TestCase):
 	def test_loss_function(self):
 		x = torch.randn(1, 3, 64, 64)
 		y = self.model(x)
-		loss = self.model.loss_function(*y, M_N=0.005)
+		loss = self.model.loss_function(*y, M_N=0.00025)
 
 if __name__ == '__main__':
 	unittest.main()

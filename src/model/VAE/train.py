@@ -19,7 +19,7 @@ def train(train_loader, learning_rate=0.005, epochs=10):
 			optimizer.zero_grad()
 			outputs = model(data)
 			result = criterion(*outputs, M_N=0.00025)
-			loss = result['loss']
+			loss = result['Loss']
 			recon_loss = result['Reconstruction_Loss']
 			kl_loss = result['KLD']
 			loss.backward()

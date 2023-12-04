@@ -1,22 +1,16 @@
-from torch		import nn
-from abc		import abstractmethod
+# Import user-defined packages
 from ...types_	import *
 
-class Base(nn.Module):
+from torch		import nn
+from abc		import ABC, abstractmethod
+
+class Base(ABC, nn.Module):
 	def __init__(self):
 		super(Base, self).__init__()
 
-	def	encode(self, input: Tensor) -> Tensor:
-		raise NotImplementedError
-
-	def decode(self, input: Tensor) -> Tensor:
-		raise NotImplementedError
-
-	def sample(self, num_samples: int) -> Tensor:
-		raise NotImplementedError
-
-	def generate(self, input: Tensor) -> Tensor:
-		raise NotImplementedError
+	@abstractmethod
+	def sample(self, num_samples: int, device: int, **kwargs) -> Tensor:
+		pass
 
 	@abstractmethod
 	def forward(self, x):
@@ -25,3 +19,22 @@ class Base(nn.Module):
 	@abstractmethod
 	def loss_function(self, x):
 		pass
+
+	def generate(self, input: Tensor) -> Tensor:
+		raise NotImplementedError
+
+	class Encoder(nn.Module):
+		def __init__(self):
+			super(Base.Encoder, self).__init__()
+
+		@abstractmethod
+		def forward(self, x):
+			pass
+
+	class Decoder(nn.Module):
+		def __init__(self):
+			super(Base.Decoder, self).__init__()
+
+		@abstractmethod
+		def forward(self, x):
+			pass

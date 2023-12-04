@@ -21,8 +21,8 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 
 			# Train Generator ------------------------------------------------------------------
 			generator_optimizer.zero_grad()
-			generated_image = generator(model.sample(model.latent_dim, device))
-			pred_fake = discriminator(generated_image.detach())
+			generated_image = generator(model.sample(data.shape[0], device))
+			pred_fake = discriminator(generated_image)
 			generator_loss = generator.loss_function(pred_fake)
 			generator_loss.backward()
 			generator_optimizer.step()
