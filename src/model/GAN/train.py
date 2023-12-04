@@ -16,21 +16,37 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
 	discriminator_optimizer = torch.optim.Adam(discriminator.parameters(), lr=learning_rate)
 
+	# Set real_label with noise 0.75 to 1.25
+	real_label = torch.FloatTensor(train_loader.batch_size, 1).uniform_(0.75, 1.25).to(device)
+
+	# Set fake_label with noise 0 to 0.25
+	fake_label = torch.FloatTensor(train_loader.batch_size, 1).uniform_(0, 0.25).to(device)
+
 	for epoch in range(epochs):
 		for i, data in enumerate(train_loader):
 			data = data.to(device)
+
+			# Noramlize data to [-1, 1]
+			min_val = data.min()
+			max_val = data.max()
+			data = (data - min_val) / (max_val - min_val)
+			data = (data - 0.5) / 0.5
 
 			# Train Discriminator --------------------------------------------------------------
 			# Train real data
 			discriminator.zero_grad()
 			pred_real = discriminator(data)
-			real_loss = F.binary_cross_entropy(pred_real, torch.ones_like(pred_real))
+			# Flip label per 10 steps
+			if i % 10 == 0:
+				real_loss = F.binary_cross_entropy(pred_real, fake_label)
+			else:
+				real_loss = F.binary_cross_entropy(pred_real, real_label)
 			real_loss.backward()
 
 			# Train fake data
 			fake = generator(model.sample(data.shape[0], device))
 			pred_fake = discriminator(fake.detach())
-			fake_loss = F.binary_cross_entropy(pred_fake, torch.zeros_like(pred_fake))
+			fake_loss = F.binary_cross_entropy(pred_fake, fake_label)
 			fake_loss.backward()
 
 			discriminator_loss = real_loss + fake_loss / 2
@@ -40,7 +56,8 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 			# Train Generator ------------------------------------------------------------------
 			generator.zero_grad()
 			pred_fake = discriminator(fake)
-			generator_loss = F.binary_cross_entropy(pred_fake, torch.ones_like(pred_fake))
+			# Use max log(D(G(z))) instead of min log(1 - D(G(z))) for better gradient
+			generator_loss = -F.binary_cross_entropy(pred_fake, real_label)
 			generator_loss.backward()
 			generator_optimizer.step()
 			# ----------------------------------------------------------------------------------
@@ -51,7 +68,7 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 					epochs,
 					i + 1,
 					len(train_loader),
-					generator_loss.item(),
+					-generator_loss.item(),
 					discriminator_loss.item()
 				))
 
