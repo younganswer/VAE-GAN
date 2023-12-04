@@ -20,12 +20,6 @@ def train(train_loader, learning_rate=0.005, epochs=5):
 		for i, data in enumerate(train_loader):
 			data = data.to(device)
 
-			# Normalize data to [-1, 1]
-			#min_val = torch.min(data)
-			#max_val = torch.max(data)
-			#data = (data - min_val) / (max_val - min_val)
-			#data = (data - 0.5) / 0.5
-
 			# Add noise to label			
 			noise_factor = 0.1
 			noise = torch.randn(data.shape[0], 1, device=device) * noise_factor
@@ -90,7 +84,7 @@ def main():
 		drop_last=True,
 	)
 
-	model = train(train_loader, learning_rate=0.005, epochs=3)
+	model = train(train_loader, learning_rate=0.005, epochs=10)
 
 	torch.save(model.state_dict(), './src/model/GAN/CelebA_64_square.pth')
 
