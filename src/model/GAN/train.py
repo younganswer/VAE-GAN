@@ -8,6 +8,7 @@ from torchvision		import transforms
 from torch.nn			import functional as F
 
 def pretrain_generator(model, device, train_loader, learning_rate=0.005, epochs=5):
+	print("Pretraining Generator")
 	generator = model.generator
 	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
 
@@ -19,6 +20,7 @@ def pretrain_generator(model, device, train_loader, learning_rate=0.005, epochs=
 			generated_image = generator(model.sample(data.shape[0], device))
 			generator_loss = F.mse_loss(generated_image, data)
 			generator_loss.backward()
+			generator_optimizer.step()
 
 			if (i + 1) % 100 == 0:
 				print("Epoch [{}/{}], Step [{:4d}/{}], Generator Loss: {:.4f}".format(
@@ -29,9 +31,12 @@ def pretrain_generator(model, device, train_loader, learning_rate=0.005, epochs=
 					generator_loss.item()
 				))
 
+	print("Pretraining Generator Done")
+
 	return model
 
 def train(model, device, train_loader, learning_rate=0.005, epochs=5):
+	print("Training")
 	generator = model.generator
 	discriminator = model.discriminator
 	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
@@ -84,6 +89,8 @@ def train(model, device, train_loader, learning_rate=0.005, epochs=5):
 					generator_loss.item(),
 					discriminator_loss.item()
 				))
+
+	print("Training Done")
 
 	return model
 
