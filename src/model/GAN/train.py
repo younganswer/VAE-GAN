@@ -36,8 +36,8 @@ def pretrain_generator_with_VAE(model, device, train_loader, learning_rate=0.005
 					loss.item()
 				))
 
-	model.generator.decoder_input = vae.decoder.input
-	model.generator.decoder = vae.decoder.conv_layer
+	model.generator.decoder_input.load_state_dict(vae.decoder.input.state_dict())
+	model.generator.decoder.load_state_dict(vae.decoder.conv_layer.state_dict())
 
 	print("Pretraining Done")
 
@@ -123,8 +123,8 @@ def main():
 	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
 	print("Using {} device".format(device))
 	model = GAN().to(device)
-	model = pretrain_generator_with_VAE(model, device, train_loader, learning_rate=0.005, epochs=2)
-	model = train(model, device, train_loader, learning_rate=0.005, epochs=3)
+	model = pretrain_generator_with_VAE(model, device, train_loader, learning_rate=0.005, epochs=5)
+	model = train(model, device, train_loader, learning_rate=0.005, epochs=5)
 
 	torch.save(model.state_dict(), './src/model/GAN/CelebA_64_square.pth')
 
