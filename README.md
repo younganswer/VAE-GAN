@@ -34,7 +34,7 @@ Check out the `notebook` directory.
 
 ## Results
 
-|     |                            Generated images                            |                                1 sample with variations                                 |
+|     |                            Generated images                            |                               One sample with variations                                |
 | :-: | :--------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
 | VAE | <img src='./assets/VAE_generated_images.png' width='256' height='256'> | <img src='./assets/VAE_1_sample_with_5_square_variations.png' width='256' height='256'> |
 | GAN | <img src='./assets/GAN_generated_images.png' width='256' height='256'> | <img src='./assets/GAN_1_sample_with_5_square_variations.png' width='256' height='256'> |
