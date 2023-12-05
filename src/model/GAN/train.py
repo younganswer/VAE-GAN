@@ -123,8 +123,8 @@ def main():
 	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
 	print("Using {} device".format(device))
 	model = GAN().to(device)
-	model = pretrain_generator_with_VAE(model, device, train_loader, learning_rate=0.005, epochs=5)
-	model = train(model, device, train_loader, learning_rate=0.005, epochs=5)
+	model = pretrain_generator_with_VAE(model, device, train_loader, learning_rate=0.005, epochs=2)
+	model = train(model, device, train_loader, learning_rate=0.005, epochs=3)
 
 	torch.save(model.state_dict(), './src/model/GAN/CelebA_64_square.pth')
 
