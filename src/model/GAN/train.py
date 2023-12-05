@@ -7,10 +7,31 @@ from torch.utils.data	import DataLoader
 from torchvision		import transforms
 from torch.nn			import functional as F
 
-def train(train_loader, learning_rate=0.005, epochs=5):
-	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
-	print("Using {} device".format(device))
-	model = GAN().to(device)
+def pretrain_generator(model, train_loader, learning_rate=0.005, epochs=5):
+	generator = model.generator
+	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
+
+	for epoch in range(epochs):
+		for i, data in enumerate(train_loader):
+			data = data.to(device)
+
+			generator.zero_grad()
+			generated_image = generator(model.sample(data.shape[0], device))
+			generator_loss = F.mse_loss(generated_image, data)
+			generator_loss.backward()
+
+			if (i + 1) % 100 == 0:
+				print("Epoch [{}/{}], Step [{:4d}/{}], Generator Loss: {:.4f}".format(
+					epoch + 1,
+					epochs,
+					i + 1,
+					len(train_loader),
+					generator_loss.item()
+				))
+
+	return model
+
+def train(model, train_loader, learning_rate=0.005, epochs=5):
 	generator = model.generator
 	discriminator = model.discriminator
 	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
@@ -84,7 +105,11 @@ def main():
 		drop_last=True,
 	)
 
-	model = train(train_loader, learning_rate=0.005, epochs=4)
+	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
+	print("Using {} device".format(device))
+	model = GAN().to(device)
+	model = pretrain_generator(model, train_loader, learning_rate=0.005, epochs=5)
+	model = train(model, train_loader, learning_rate=0.005, epochs=5)
 
 	torch.save(model.state_dict(), './src/model/GAN/CelebA_64_square.pth')
 
