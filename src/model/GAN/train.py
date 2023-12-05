@@ -7,7 +7,7 @@ from torch.utils.data	import DataLoader
 from torchvision		import transforms
 from torch.nn			import functional as F
 
-def pretrain_generator(model, train_loader, learning_rate=0.005, epochs=5):
+def pretrain_generator(model, device, train_loader, learning_rate=0.005, epochs=5):
 	generator = model.generator
 	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
 
@@ -31,7 +31,7 @@ def pretrain_generator(model, train_loader, learning_rate=0.005, epochs=5):
 
 	return model
 
-def train(model, train_loader, learning_rate=0.005, epochs=5):
+def train(model, device, train_loader, learning_rate=0.005, epochs=5):
 	generator = model.generator
 	discriminator = model.discriminator
 	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
@@ -108,8 +108,8 @@ def main():
 	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
 	print("Using {} device".format(device))
 	model = GAN().to(device)
-	model = pretrain_generator(model, train_loader, learning_rate=0.005, epochs=5)
-	model = train(model, train_loader, learning_rate=0.005, epochs=5)
+	model = pretrain_generator(model, device, train_loader, learning_rate=0.005, epochs=5)
+	model = train(model, device, train_loader, learning_rate=0.005, epochs=5)
 
 	torch.save(model.state_dict(), './src/model/GAN/CelebA_64_square.pth')
 
