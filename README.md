@@ -45,6 +45,8 @@ Check out the `notebook` directory.
 | VAE | <img src='./assets/VAE_generated_images.png' width='256' height='256'> | <img src='./assets/VAE_1_sample_with_5_square_variations.png' width='256' height='256'> |
 | GAN | <img src='./assets/GAN_generated_images.png' width='256' height='256'> | <img src='./assets/GAN_1_sample_with_5_square_variations.png' width='256' height='256'> |
 
+<br/><br/>
+
 ## Licence
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
