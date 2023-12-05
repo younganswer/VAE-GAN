@@ -34,13 +34,7 @@ Check out the `notebook` directory.
 
 ## Results
 
-<!-- make table -->
-<!-- first row: VAE -->
-<!-- second row: GAN -->
-<!-- first column: Random sampled 5 square images -->
-<!-- second column: 1 sample & 5 square variations -->
-
-|     |                            Generated images                            |                            1 sample with 5 square variations                            |
+|     |                            Generated images                            |                                1 sample with variations                                 |
 | :-: | :--------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
 | VAE | <img src='./assets/VAE_generated_images.png' width='256' height='256'> | <img src='./assets/VAE_1_sample_with_5_square_variations.png' width='256' height='256'> |
 | GAN | <img src='./assets/GAN_generated_images.png' width='256' height='256'> | <img src='./assets/GAN_1_sample_with_5_square_variations.png' width='256' height='256'> |
