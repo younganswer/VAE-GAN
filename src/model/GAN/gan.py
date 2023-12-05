@@ -6,7 +6,8 @@ import torch
 from torch		import nn
 from torch.nn	import functional as F
 
-# Deep Convolutional GAN with Least Squares
+# Deep Convolutional GAN with Least Squares Loss
+# Unbalanced Generator and Discriminator
 class GAN(Base):
 	def __init__(
 		self,
@@ -23,7 +24,8 @@ class GAN(Base):
 		self.hidden_dims = hidden_dims
 
 		self.generator = self.Generator(latent_dim, hidden_dims)
-		self.discriminator = self.Discriminator(latent_dim, hidden_dims[::-1])
+		# Reverse hidden_dims and remove last element
+		self.discriminator = self.Discriminator(latent_dim, hidden_dims[::-1][:-1]) 
 
 	def sample(self, num_samples: int, device: int, **kwargs) -> Tensor:
 		z = torch.randn(num_samples, self.latent_dim)
@@ -130,7 +132,7 @@ class GAN(Base):
 
 			self.encoder = nn.Sequential(*modules)
 			self.fc = nn.Sequential(
-				nn.Linear(self.hidden_dims[-1] * 2 * 2, self.latent_dim),
+				nn.Linear(self.hidden_dims[-1] * 4 * 4, self.latent_dim),
 				nn.LeakyReLU()
 			)
 			self.out = nn.Linear(self.latent_dim, 1)

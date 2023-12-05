@@ -1,5 +1,6 @@
 # Import user-defined packages
 from .gan		import GAN
+from ..VAE		import VAE
 from ...dataset	import CustomDataset
 
 import torch
@@ -7,31 +8,38 @@ from torch.utils.data	import DataLoader
 from torchvision		import transforms
 from torch.nn			import functional as F
 
-def pretrain_generator(model, device, train_loader, learning_rate=0.005, epochs=5):
-	print("Pretraining Generator")
-	generator = model.generator
-	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
+def pretrain_generator_with_VAE(model, device, train_loader, learning_rate=0.005, epochs=5):
+	print("Pretraining Generator with VAE")
+
+	vae = VAE().to(device)
+	vae_optimizer = torch.optim.Adam(vae.parameters(), lr=learning_rate)
 
 	for epoch in range(epochs):
 		for i, data in enumerate(train_loader):
 			data = data.to(device)
 
-			generator.zero_grad()
-			generated_image = generator(model.sample(data.shape[0], device))
-			generator_loss = F.mse_loss(generated_image, data)
-			generator_loss.backward()
-			generator_optimizer.step()
+			# Train VAE -----------------------------------------------------------------------
+			vae.zero_grad()
+			outputs = vae(data)
+			result = vae.loss_function(*outputs, M_N=0.00025)
+			loss = result['Loss']
+			loss.backward()
+			vae_optimizer.step()
+			# ----------------------------------------------------------------------------------
 
 			if (i + 1) % 100 == 0:
-				print("Epoch [{}/{}], Step [{:4d}/{}], Generator Loss: {:.4f}".format(
+				print("Epoch [{}/{}], Step [{:4d}/{}], VAE Loss: {:.4f}".format(
 					epoch + 1,
 					epochs,
 					i + 1,
 					len(train_loader),
-					generator_loss.item()
+					loss.item()
 				))
 
-	print("Pretraining Generator Done")
+	model.generator.decoder_input = vae.decoder.input
+	model.generator.decoder = vae.decoder.conv_layer
+
+	print("Pretraining Done")
 
 	return model
 
@@ -115,7 +123,7 @@ def main():
 	device = torch.device(0 if torch.cuda.is_available() else 'cpu')
 	print("Using {} device".format(device))
 	model = GAN().to(device)
-	model = pretrain_generator(model, device, train_loader, learning_rate=0.005, epochs=5)
+	model = pretrain_generator_with_VAE(model, device, train_loader, learning_rate=0.005, epochs=5)
 	model = train(model, device, train_loader, learning_rate=0.005, epochs=5)
 
 	torch.save(model.state_dict(), './src/model/GAN/CelebA_64_square.pth')
