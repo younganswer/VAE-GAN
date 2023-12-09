@@ -22,11 +22,11 @@ class VAE(Base):
 		self.encoder = self.Encoder(latent_dim, hidden_dims)
 		self.decoder = self.Decoder(latent_dim, hidden_dims[::-1])
 	
-	def encode(self, x: Tensor) -> List[Tensor]:
-		return self.encoder(x)
+	def encode(self, x: Tensor, **kwargs) -> List[Tensor]:
+		return self.encoder(x, **kwargs)
 
-	def decode(self, z: Tensor) -> Tensor:
-		return self.decoder(z)
+	def decode(self, z: Tensor, **kwargs) -> Tensor:
+		return self.decoder(z, **kwargs)
 		
 	def	reparameterize(self, mu: Tensor, log_var: Tensor) -> Tensor:
 		# Current distribution
@@ -42,9 +42,9 @@ class VAE(Base):
 		return z
 
 	def	forward(self, input: Tensor, **kwargs) -> List[Tensor]:
-		mu, log_var = self.encoder(input)
-		z = self.reparameterize(mu, log_var)
-		return [ self.decoder(z), input, mu, log_var ]
+		mu, log_var = self.encoder(input, **kwargs)
+		z = self.reparameterize(mu, log_var, **kwargs)
+		return [ self.decoder(z, **kwargs), input, mu, log_var ]
 
 	def loss_function(self, *args, **kwargs) -> dict:
 		recons = args[0]
@@ -77,7 +77,7 @@ class VAE(Base):
 		return samples
 
 	def generate(self, x: Tensor, **kwargs) -> Tensor:
-		return self.forward(x)[0]
+		return self.forward(x, **kwargs)[0]
 
 	class Encoder(Base.Encoder):
 		def __init__(
@@ -107,7 +107,8 @@ class VAE(Base):
 							padding=1
 						),
 						nn.BatchNorm2d(hidden_dim),
-						nn.LeakyReLU()
+						nn.LeakyReLU(),
+						nn.Dropout2d(0.1)
 					)
 				)
 				in_channels = hidden_dim
@@ -122,7 +123,7 @@ class VAE(Base):
 			mu = self.fc_mu(result)
 			log_var = self.fc_var(result)
 
-			return [mu, log_var]
+			return [ mu, log_var ]
 
 	class Decoder(Base.Decoder):
 		def __init__(
@@ -154,7 +155,8 @@ class VAE(Base):
 							output_padding=1
 						),
 						nn.BatchNorm2d(self.hidden_dims[i+1]),
-						nn.LeakyReLU()
+						nn.LeakyReLU(),
+						nn.Dropout2d(0.1)
 					)
 				)
 
@@ -173,7 +175,7 @@ class VAE(Base):
 				nn.Tanh()
 			)
 
-		def forward(self, z: Tensor) -> Tensor:
+		def forward(self, z: Tensor, **kwargs) -> Tensor:
 			result = self.input(z)
 			result = result.view(-1, self.hidden_dims[0], 2, 2)
 			result = self.conv_layer(result)
