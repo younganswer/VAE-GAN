@@ -63,7 +63,8 @@ class GAN(Base):
 							output_padding=1
 						),
 						nn.BatchNorm2d(self.hidden_dims[i+1]),
-						nn.LeakyReLU()
+						nn.LeakyReLU(),
+						nn.Dropout(0.2)
 					)
 				)
 
@@ -80,6 +81,7 @@ class GAN(Base):
 				),
 				nn.BatchNorm2d(self.hidden_dims[-1]),
 				nn.LeakyReLU(),
+				nn.Dropout(0.2),
 				nn.Conv2d(
 					self.hidden_dims[-1],
 					out_channels=3,
@@ -125,7 +127,8 @@ class GAN(Base):
 							padding=1
 						),
 						nn.BatchNorm2d(hidden_dim),
-						nn.LeakyReLU()
+						nn.LeakyReLU(),
+						nn.Dropout(0.2)
 					)
 				)
 				in_channels = hidden_dim
@@ -133,7 +136,8 @@ class GAN(Base):
 			self.encoder = nn.Sequential(*modules)
 			self.fc = nn.Sequential(
 				nn.Linear(self.hidden_dims[-1] * 4 * 4, self.latent_dim),
-				nn.LeakyReLU()
+				nn.LeakyReLU(),
+				nn.Dropout(0.2)
 			)
 			self.out = nn.Linear(self.latent_dim, 1)
 
