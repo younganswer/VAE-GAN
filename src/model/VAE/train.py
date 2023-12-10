@@ -49,7 +49,7 @@ def main():
 		drop_last=True,
 	)
 
-	model = train(train_loader, learning_rate=0.005, epochs=10)
+	model = train(train_loader, learning_rate=0.005, epochs=100)
 
 	torch.save(model.state_dict(), './src/model/VAE/CelebA_64_square.pth')
 
