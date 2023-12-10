@@ -43,39 +43,35 @@ def pretrain_generator_with_VAE(model, device, train_loader, learning_rate=0.005
 
 	return model
 
-def train(model, device, train_loader, learning_rate=0.005, epochs=5):
+def train(model, device, train_loader, learning_rate=0.005, epochs=5, noise_factor=0):
 	print("Training")
 	generator = model.generator
 	discriminator = model.discriminator
 	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
 	discriminator_optimizer = torch.optim.Adam(discriminator.parameters(), lr=learning_rate)
 
+	real_label = torch.ones(data.shape[0], 1, device=device)
+	fake_label = torch.zeros(data.shape[0], 1, device=device)
+	noise = torch.randn(data.shape[0], 1, device=device) * noise_factor
+
 	for epoch in range(epochs):
 		for i, data in enumerate(train_loader):
 			data = data.to(device)
-
-			# Add noise to label			
-			#noise_factor = 0.1
-			# Remove noise to label
-			noise_factor = 0
-			noise = torch.randn(data.shape[0], 1, device=device) * noise_factor
-			real_label = torch.ones(data.shape[0], 1, device=device) + noise
-			fake_label = torch.zeros(data.shape[0], 1, device=device) + noise
 
 			# Train Discriminator --------------------------------------------------------------
 			# Train real data
 			discriminator.zero_grad()
 			pred_real = discriminator(data)
-			real_loss = F.mse_loss(pred_real, real_label)
-			if (i + 1) % 16 == 0: # Flip label per 16 steps
-				real_loss = F.mse_loss(pred_real, fake_label)
+			real_loss = F.mse_loss(pred_real, real_label + noise)
+			#if (i + 1) % 16 == 0: # Flip label per 16 steps
+			#	real_loss = F.mse_loss(pred_real, fake_label)
 
 			# Train fake data
 			fake = generator(model.sample(data.shape[0], device))
 			pred_fake = discriminator(fake.detach())
-			fake_loss = F.mse_loss(pred_fake, fake_label)
-			if (i + 1) % 16 == 0: # Flip label per 16 steps
-				fake_loss = F.mse_loss(pred_fake, real_label)
+			fake_loss = F.mse_loss(pred_fake, fake_label + noise)
+			#if (i + 1) % 16 == 0: # Flip label per 16 steps
+			#	fake_loss = F.mse_loss(pred_fake, real_label)
 
 			discriminator_loss = real_loss + fake_loss / 2
 			discriminator_loss.backward()
