@@ -50,13 +50,13 @@ def train(model, device, train_loader, learning_rate=0.005, epochs=5, noise_fact
 	generator_optimizer = torch.optim.Adam(generator.parameters(), lr=learning_rate)
 	discriminator_optimizer = torch.optim.Adam(discriminator.parameters(), lr=learning_rate)
 
-	real_label = torch.ones(data.shape[0], 1, device=device)
-	fake_label = torch.zeros(data.shape[0], 1, device=device)
-	noise = torch.randn(data.shape[0], 1, device=device) * noise_factor
-
 	for epoch in range(epochs):
 		for i, data in enumerate(train_loader):
 			data = data.to(device)
+
+			real_label = torch.ones(data.shape[0], 1, device=device)
+			fake_label = torch.zeros(data.shape[0], 1, device=device)
+			noise = torch.randn(data.shape[0], 1, device=device) * noise_factor
 
 			# Train Discriminator --------------------------------------------------------------
 			# Train real data
