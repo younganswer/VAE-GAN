@@ -73,7 +73,7 @@ def train(model, device, train_loader, learning_rate=0.005, epochs=5, noise_fact
 			#if (i + 1) % 16 == 0: # Flip label per 16 steps
 			#	fake_loss = F.mse_loss(pred_fake, real_label)
 
-			discriminator_loss = real_loss + fake_loss / 2
+			discriminator_loss = (real_loss + fake_loss) / 2
 			discriminator_loss.backward()
 			discriminator_optimizer.step()
 			# ----------------------------------------------------------------------------------
