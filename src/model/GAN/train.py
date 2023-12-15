@@ -56,8 +56,6 @@ def train(model, device, train_loader, learning_rate=0.005, epochs=5, noise_fact
 
 			real_label = torch.ones(data.shape[0], 1, device=device)
 			fake_label = torch.zeros(data.shape[0], 1, device=device)
-			#real_noise = torch.randn(data.shape[0], 1, device=device) * noise_factor
-			#fake_noise = torch.randn(data.shape[0], 1, device=device) * noise_factor + 0.1
 
 			# Train Discriminator --------------------------------------------------------------
 			# Train real data
